@@ -2,27 +2,32 @@
 
 namespace Mtrajano\LaravelSwagger\Tests\Stubs\Requests;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UserStoreRequest extends FormRequest
+final class UserStoreRequest extends FormRequest
 {
-    public function rules()
+    public function validateResolved(): void
+    {
+
+    }
+
+    public function rules(): array
     {
         return [
-            'id'            => [
+            'id' => [
                 'integer',
                 'required'
             ],
-            'email'         => 'required|email',
-            'address'       => 'string|required',
-            'dob'           => 'date|required',
-            'picture'       => 'file',
-            'is_validated'  => 'boolean',
-            'score'         => 'numeric',
-            'account_type'  => [
+            'email' => 'required|email',
+            'address' => 'string|required',
+            'dob' => 'date|required',
+            'picture' => 'file',
+            'is_validated' => 'boolean',
+            'score' => 'numeric',
+            'account_type' => [
                 'required',
-                Rule::in(1,2)
+                Rule::in(1, 2)
             ],
             'language_spoken' => 'required|in:en,es'
         ];

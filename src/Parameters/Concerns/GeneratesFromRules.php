@@ -6,47 +6,42 @@ use Illuminate\Support\Str;
 
 trait GeneratesFromRules
 {
-    protected function splitRules($rules)
+    private function splitRules(array|string $rules): array
     {
         if (is_string($rules)) {
             return explode('|', $rules);
-        } else {
-            return $rules;
         }
+
+        return $rules;
     }
 
-    protected function getParamType(array $paramRules)
+    private function getParamType(array $paramRules): string
     {
-        if (in_array('integer', $paramRules)) {
-            return 'integer';
-        } elseif (in_array('numeric', $paramRules)) {
-            return 'number';
-        } elseif (in_array('boolean', $paramRules)) {
-            return 'boolean';
-        } elseif (in_array('array', $paramRules)) {
-            return 'array';
-        } else {
-            //date, ip, email, etc..
-            return 'string';
-        }
+        return match (true) {
+            in_array('integer', $paramRules, true) => 'integer',
+            in_array('numeric', $paramRules, true) => 'number',
+            in_array('boolean', $paramRules, true) => 'boolean',
+            in_array('array', $paramRules, true) => 'array',
+            default => 'string',  //date, ip, email, etc..
+        };
     }
 
-    protected function isParamRequired(array $paramRules)
+    private function isParamRequired(array $paramRules): bool
     {
-        return in_array('required', $paramRules);
+        return in_array('required', $paramRules, true);
     }
 
-    protected function isArrayParameter($param)
+    private function isArrayParameter(string $param): bool
     {
         return Str::contains($param, '*');
     }
 
-    protected function getArrayKey($param)
+    private function getArrayKey(string $param): string
     {
         return current(explode('.', $param));
     }
 
-    protected function getEnumValues(array $paramRules)
+    private function getEnumValues(array $paramRules): array
     {
         $in = $this->getInParameter($paramRules);
 
@@ -54,12 +49,12 @@ trait GeneratesFromRules
             return [];
         }
 
-        [$param, $vals] = explode(':', $in);
+        [, $vals] = explode(':', $in);
 
         return explode(',', $vals);
     }
 
-    private function getInParameter(array $paramRules)
+    private function getInParameter(array $paramRules): ?string
     {
         foreach ($paramRules as $rule) {
             if ((is_string($rule) || method_exists($rule, '__toString')) && Str::startsWith($rule, 'in:')) {
@@ -67,6 +62,6 @@ trait GeneratesFromRules
             }
         }
 
-        return false;
+        return null;
     }
 }

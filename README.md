@@ -1,12 +1,10 @@
 # Laravel Swagger
 
-**Please note this package is deprecated and is no longer being maintained. For the time being I will accept bug fix prs but will try to avoid adding any large features to it. If you are interested in taking over the project please shoot me an email and we can work it out.**
-
 Laravel Swagger scans your Laravel project's endpoints and auto generates a Swagger 2.0 documentation for you.
 
-[![Build Status](https://travis-ci.org/mtrajano/laravel-swagger.svg?branch=master)](https://travis-ci.org/mtrajano/laravel-swagger)
-[![Latest Stable Version](https://poser.pugx.org/mtrajano/laravel-swagger/v/stable)](https://packagist.org/packages/mtrajano/laravel-swagger)
-[![License](https://poser.pugx.org/mtrajano/laravel-swagger/license)](https://packagist.org/packages/mtrajano/laravel-swagger)
+[![Build Status](https://travis-ci.org/laxity7/laravel-swagger.svg?branch=master)](https://travis-ci.org/laxity7/laravel-swagger)
+[![Latest Stable Version](https://poser.pugx.org/laxity7/laravel-swagger/v/stable)](https://packagist.org/packages/laxity7/laravel-swagger)
+[![License](https://poser.pugx.org/laxity7/laravel-swagger/license)](https://packagist.org/packages/laxity7/laravel-swagger)
 
 ## About
 
@@ -16,9 +14,7 @@ One thing to note is this library leans on being explicit. It will choose to inc
 
 ## Installation
 
-The package can easily be installed by running `composer require mtrajano/laravel-swagger` in your project's root folder.
-
-If you are running a version of Laravel < 5.5 also make sure you add `Mtrajano\LaravelSwagger\SwaggerServiceProvider::class` to the `providers` array in `config/app.php`.
+The package can easily be installed by running `composer require laxity7/laravel-swagger` in your project's root folder.
 
 This will register the artisan command that will be available to you.
 
@@ -75,7 +71,7 @@ class UserShowRequest extends FormRequest
 ```
 
 Running `php artisan laravel-swagger:generate > swagger.json` will generate the following file:
-```js
+```json
 {
     "swagger": "2.0",
     "info": {
@@ -83,15 +79,14 @@ Running `php artisan laravel-swagger:generate > swagger.json` will generate the 
         "description": "Test",
         "version": "1.0.1"
     },
-    "host": "http:\/\/localhost",
-    "basePath": "\/",
+    "host": "localhost:80",
+    "basePath": "/",
     "paths": {
-        "\/api\/user\/{id}": {
+        "/api/user/{id}": {
             "get": {
                 "summary": "Return all the details of a user",
-                "description": "Returns the user's first name, last name and address
- Please see the documentation [here](https://example.com/users) for more information",
-                "deprecated": true
+                "description": "Returns the user's first name, last name and address Please see the documentation [here](https://example.com/users) for more information",
+                "deprecated": true,
                 "responses": {
                     "200": {
                         "description": "OK"

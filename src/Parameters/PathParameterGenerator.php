@@ -3,17 +3,16 @@
 namespace Mtrajano\LaravelSwagger\Parameters;
 
 use Illuminate\Support\Str;
+use function Mtrajano\LaravelSwagger\strip_optional_char;
 
-class PathParameterGenerator implements ParameterGenerator
+final class PathParameterGenerator implements ParameterGenerator
 {
-    protected $uri;
-
-    public function __construct($uri)
-    {
-        $this->uri = $uri;
+    public function __construct(
+        private readonly string $uri
+    ) {
     }
 
-    public function getParameters()
+    public function getParameters(): array
     {
         $params = [];
         $pathVariables = $this->getAllVariablesFromUri();
@@ -31,19 +30,19 @@ class PathParameterGenerator implements ParameterGenerator
         return $params;
     }
 
-    private function getAllVariablesFromUri()
+    private function getAllVariablesFromUri(): array
     {
         preg_match_all('/{(\w+\??)}/', $this->uri, $pathVariables);
 
         return $pathVariables[1];
     }
 
-    public function getParamLocation()
+    public function getParamLocation(): string
     {
         return 'path';
     }
 
-    private function isPathVariableRequired($pathVariable)
+    private function isPathVariableRequired(string $pathVariable): bool
     {
         return !Str::contains($pathVariable, '?');
     }

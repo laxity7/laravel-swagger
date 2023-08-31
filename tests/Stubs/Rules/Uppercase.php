@@ -2,29 +2,15 @@
 
 namespace Mtrajano\LaravelSwagger\Tests\Stubs\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class Uppercase implements Rule
+final class Uppercase implements ValidationRule
 {
-    /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
-     */
-    public function passes($attribute, $value)
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        return strtoupper($value) === $value;
-    }
-
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message()
-    {
-        return 'The :attribute must be uppercase.';
+        if (strtoupper($value) !== $value) {
+            $fail('The :attribute must be uppercase.');
+        }
     }
 }

@@ -2,21 +2,29 @@
 
 namespace Mtrajano\LaravelSwagger\Parameters;
 
-class BodyParameterGenerator implements ParameterGenerator
+final class BodyParameterGenerator implements ParameterGenerator
 {
     use Concerns\GeneratesFromRules;
 
-    protected $rules;
-
-    public function __construct($rules)
-    {
-        $this->rules = $rules;
+    public function __construct(
+        readonly private array $rules
+    ) {
     }
 
-    public function getParameters()
+    public function getParameters(): array
     {
         $required = [];
         $properties = [];
+        foreach ($this->rules as $param => $rule) {
+            $paramRules = $this->splitRules($rule);
+            $nameTokens = explode('.', $param);
+
+            $properties = $this->addToProperties($nameTokens, $paramRules, $properties);
+
+            if ($this->isParamRequired($paramRules)) {
+                $required[] = $param;
+            }
+        }
 
         $params = [
             'in' => $this->getParamLocation(),
@@ -24,41 +32,32 @@ class BodyParameterGenerator implements ParameterGenerator
             'description' => '',
             'schema' => [
                 'type' => 'object',
+                'properties' => $properties
             ],
         ];
-
-        foreach ($this->rules as $param => $rule) {
-            $paramRules = $this->splitRules($rule);
-            $nameTokens = explode('.', $param);
-
-            $this->addToProperties($properties, $nameTokens, $paramRules);
-
-            if ($this->isParamRequired($paramRules)) {
-                $required[] = $param;
-            }
-        }
 
         if (!empty($required)) {
             $params['schema']['required'] = $required;
         }
 
-        $params['schema']['properties'] = $properties;
-
         return [$params];
     }
 
-    public function getParamLocation()
+    public function getParamLocation(): string
     {
         return 'body';
     }
 
-    protected function addToProperties(&$properties, $nameTokens, $rules)
+    private function addToProperties(array $nameTokens, array $rules, array $properties = []): array
     {
         if (empty($nameTokens)) {
-            return;
+            return [];
         }
 
         $name = array_shift($nameTokens);
+        if ($name === '*') {
+            $name = 0;
+        }
 
         if (!empty($nameTokens)) {
             $type = $this->getNestedParamType($nameTokens);
@@ -66,36 +65,32 @@ class BodyParameterGenerator implements ParameterGenerator
             $type = $this->getParamType($rules);
         }
 
-        if ($name === '*') {
-            $name = 0;
-        }
-
         if (!isset($properties[$name])) {
-            $propObj = $this->getNewPropObj($type, $rules);
-
-            $properties[$name] = $propObj;
+            $properties[$name] = $this->getNewPropObj($type, $rules);
         } else {
             //overwrite previous type in case it wasn't given before
             $properties[$name]['type'] = $type;
         }
 
         if ($type === 'array') {
-            $this->addToProperties($properties[$name]['items'], $nameTokens, $rules);
+            $properties[$name]['items'] = $this->addToProperties($nameTokens, $rules, $properties[$name]['items'] ?? []);
         } elseif ($type === 'object') {
-            $this->addToProperties($properties[$name]['properties'], $nameTokens, $rules);
+            $properties[$name]['properties'] = $this->addToProperties($nameTokens, $rules, $properties[$name]['properties'] ?? []);
         }
+
+        return $properties;
     }
 
-    protected function getNestedParamType($nameTokens)
+    private function getNestedParamType(array $nameTokens): string
     {
         if (current($nameTokens) === '*') {
             return 'array';
-        } else {
-            return 'object';
         }
+
+        return 'object';
     }
 
-    protected function getNewPropObj($type, $rules)
+    private function getNewPropObj(string $type, array $rules): array
     {
         $propObj = [
             'type' => $type,

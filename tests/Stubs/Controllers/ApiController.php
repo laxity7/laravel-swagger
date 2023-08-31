@@ -4,14 +4,14 @@ namespace Mtrajano\LaravelSwagger\Tests\Stubs\Controllers;
 
 use Illuminate\Routing\Controller;
 
-class ApiController extends Controller
+final class ApiController extends Controller
 {
-    public function index()
+    public function index(): string
     {
         return json_encode(['result' => 'success']);
     }
 
-    public function store()
+    public function store(): string
     {
         return json_encode(['result' => 'success']);
     }

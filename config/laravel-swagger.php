@@ -48,6 +48,12 @@ return [
         'head',
     ],
 
+    /**
+     * If you wish to generate docs for a subset of your routes, you can pass a filter
+     * for example "/api"
+     */
+    'routeFilter' => null,
+
     /*
     |--------------------------------------------------------------------------
     | Parse summary and descriptions

@@ -2,18 +2,16 @@
 
 namespace Mtrajano\LaravelSwagger\Parameters;
 
-class QueryParameterGenerator implements ParameterGenerator
+final class QueryParameterGenerator implements ParameterGenerator
 {
     use Concerns\GeneratesFromRules;
 
-    protected $rules;
-
-    public function __construct($rules)
-    {
-        $this->rules = $rules;
+    public function __construct(
+        readonly private array $rules
+    ) {
     }
 
-    public function getParameters()
+    public function getParameters(): array
     {
         $params = [];
         $arrayTypes = [];
@@ -53,7 +51,7 @@ class QueryParameterGenerator implements ParameterGenerator
         return array_values($params);
     }
 
-    protected function addArrayTypes($params, $arrayTypes)
+    private function addArrayTypes(array $params, array $arrayTypes): array
     {
         foreach ($arrayTypes as $arrayKey => $type) {
             if (!isset($params[$arrayKey])) {
@@ -76,7 +74,7 @@ class QueryParameterGenerator implements ParameterGenerator
         return $params;
     }
 
-    public function getParamLocation()
+    public function getParamLocation(): string
     {
         return 'query';
     }

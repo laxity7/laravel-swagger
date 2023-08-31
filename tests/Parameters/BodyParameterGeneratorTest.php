@@ -7,9 +7,9 @@ use Mtrajano\LaravelSwagger\Parameters\BodyParameterGenerator;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Rules\Uppercase as UppercaseRule;
 use Mtrajano\LaravelSwagger\Tests\TestCase;
 
-class BodyParameterGeneratorTest extends TestCase
+final class BodyParameterGeneratorTest extends TestCase
 {
-    public function testStructure()
+    public function testStructure(): void
     {
         $bodyParameters = $this->getBodyParameters([]);
 
@@ -20,16 +20,16 @@ class BodyParameterGeneratorTest extends TestCase
         $this->assertSame('object', $bodyParameters['schema']['type']);
     }
 
-    public function testRequiredParameters()
+    public function testRequiredParameters(): array
     {
         $bodyParameters = $this->getBodyParameters([
-            'id'            => 'integer|required',
-            'email'         => 'email|required',
-            'address'       => 'string|required',
-            'dob'           => 'date|required',
-            'picture'       => 'file',
-            'is_validated'  => 'boolean',
-            'score'         => 'numeric',
+            'id' => 'integer|required',
+            'email' => 'email|required',
+            'address' => 'string|required',
+            'dob' => 'date|required',
+            'picture' => 'file',
+            'is_validated' => 'boolean',
+            'score' => 'numeric',
         ]);
 
         $this->assertEquals([
@@ -45,27 +45,27 @@ class BodyParameterGeneratorTest extends TestCase
     /**
      * @depends testRequiredParameters
      */
-    public function testDataTypes($bodyParameters)
+    public function testDataTypes(array $bodyParameters): void
     {
         $this->assertEquals([
-            'id'            => ['type' => 'integer'],
-            'email'         => ['type' => 'string'],
-            'address'       => ['type' => 'string'],
-            'dob'           => ['type' => 'string'],
-            'picture'       => ['type' => 'string'],
-            'is_validated'  => ['type' => 'boolean'],
-            'score'         => ['type' => 'number'],
+            'id' => ['type' => 'integer'],
+            'email' => ['type' => 'string'],
+            'address' => ['type' => 'string'],
+            'dob' => ['type' => 'string'],
+            'picture' => ['type' => 'string'],
+            'is_validated' => ['type' => 'boolean'],
+            'score' => ['type' => 'number'],
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testNoRequiredParameters()
+    public function testNoRequiredParameters(): void
     {
         $bodyParameters = $this->getBodyParameters([]);
 
         $this->assertArrayNotHasKey('required', $bodyParameters['schema']);
     }
 
-    public function testEnumInBody()
+    public function testEnumInBody(): void
     {
         $bodyParameters = $this->getBodyParameters([
             'account_type' => 'integer|in:1,2|in_array:foo',
@@ -79,7 +79,7 @@ class BodyParameterGeneratorTest extends TestCase
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testArraySyntax()
+    public function testArraySyntax(): void
     {
         $bodyParameters = $this->getBodyParameters([
             'matrix' => 'array',
@@ -104,7 +104,7 @@ class BodyParameterGeneratorTest extends TestCase
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testObjectInArraySyntax()
+    public function testObjectInArraySyntax(): void
     {
         $bodyParameters = $this->getBodyParameters([
             'points' => 'array',
@@ -132,7 +132,7 @@ class BodyParameterGeneratorTest extends TestCase
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testSingleObjectSyntax()
+    public function testSingleObjectSyntax(): void
     {
         $bodyParameters = $this->getBodyParameters([
             'point' => '',
@@ -155,7 +155,7 @@ class BodyParameterGeneratorTest extends TestCase
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testResolvesRuleEnum()
+    public function testResolvesRuleEnum(): void
     {
         $bodyParameters = $this->getBodyParameters([
             'type' => [
@@ -172,7 +172,7 @@ class BodyParameterGeneratorTest extends TestCase
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testIgnoresRuleObject()
+    public function testIgnoresRuleObject(): void
     {
         $bodyParameters = $this->getBodyParameters([
             'name' => [
@@ -188,14 +188,14 @@ class BodyParameterGeneratorTest extends TestCase
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testIgnoresClosureRules()
+    public function testIgnoresClosureRules(): void
     {
         $bodyParameters = $this->getBodyParameters([
             'name' => [
                 'string',
                 function ($attribute, $value, $fail) {
                     if ($value === 'foo') {
-                        $fail($attribute . ' is invalid.');
+                        $fail($attribute.' is invalid.');
                     }
                 },
             ],
@@ -208,7 +208,7 @@ class BodyParameterGeneratorTest extends TestCase
         ], $bodyParameters['schema']['properties']);
     }
 
-    private function getBodyParameters(array $rules)
+    private function getBodyParameters(array $rules): array
     {
         $bodyParameters = (new BodyParameterGenerator($rules))->getParameters();
 

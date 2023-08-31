@@ -1,5 +1,7 @@
 <?php
 
+namespace Mtrajano\LaravelSwagger;
+
 if (!function_exists('strip_optional_char')) {
     function strip_optional_char($uri)
     {

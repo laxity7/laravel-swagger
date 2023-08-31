@@ -2,38 +2,44 @@
 
 namespace Mtrajano\LaravelSwagger\Tests;
 
+use Illuminate\Routing\Router;
+use Laravel\Passport\Http\Middleware\CheckForAnyScope;
+use Laravel\Passport\Http\Middleware\CheckScopes;
 use Laravel\Passport\Passport;
+use Laravel\Passport\PassportServiceProvider;
+use Mtrajano\LaravelSwagger\SwaggerServiceProvider;
+use Mtrajano\LaravelSwagger\Tests\Stubs\Controllers\ApiController;
+use Mtrajano\LaravelSwagger\Tests\Stubs\Controllers\UserController;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Middleware\RandomMiddleware;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
-    protected function getPackageProviders($app)
+    final protected function getPackageProviders($app): array
     {
-        return ['Mtrajano\LaravelSwagger\SwaggerServiceProvider'];
+        return [
+            SwaggerServiceProvider::class,
+            PassportServiceProvider::class
+        ];
     }
 
-    protected function getEnvironmentSetUp($app)
+    final protected function getEnvironmentSetUp($app): void
     {
-        $app['router']->middleware(['some-middleware', 'scope:user-read'])->group(function () use ($app) {
-            $app['router']->get('/users', 'Mtrajano\\LaravelSwagger\\Tests\\Stubs\\Controllers\\UserController@index');
-            $app['router']->get('/users/{id}', 'Mtrajano\\LaravelSwagger\\Tests\\Stubs\\Controllers\\UserController@show');
-            $app['router']->post('/users', 'Mtrajano\\LaravelSwagger\\Tests\\Stubs\\Controllers\\UserController@store')
-                ->middleware('scopes:user-write,user-read');
-            $app['router']->get('/users/details', 'Mtrajano\\LaravelSwagger\\Tests\\Stubs\\Controllers\\UserController@details');
-            $app['router']->get('/users/ping', function () {
-                return 'pong';
-            });
+        /** @var Router $router */
+        $router = $app['router'];
+        $router->middleware(['some-middleware', 'scope:user-read'])->group(static function () use ($router) {
+            $router->get('/users', [UserController::class, 'index']);
+            $router->get('/users/{id}', [UserController::class, 'show']);
+            $router->post('/users', [UserController::class, 'store'])->middleware('scopes:user-write,user-read');
+            $router->get('/users/details', [UserController::class, 'details']);
+            $router->get('/users/ping', static fn() => 'pong');
         });
 
-        $app['router']->get('/api', 'Mtrajano\\LaravelSwagger\\Tests\\Stubs\\Controllers\\ApiController@index')
-            ->middleware(RandomMiddleware::class);
-        $app['router']->put('/api/store', 'Mtrajano\\LaravelSwagger\\Tests\\Stubs\\Controllers\\ApiController@store');
+        $router->get('/api', [ApiController::class, 'index'])->middleware(RandomMiddleware::class);
+        $router->put('/api/store', [ApiController::class, 'store']);
 
-        Passport::routes();
-
-        $app['router']->aliasMiddleware('scopes', \Laravel\Passport\Http\Middleware\CheckScopes::class);
-        $app['router']->aliasMiddleware('scope', \Laravel\Passport\Http\Middleware\CheckForAnyScope::class);
+        $router->aliasMiddleware('scopes', CheckScopes::class);
+        $router->aliasMiddleware('scope', CheckForAnyScope::class);
 
         Passport::tokensCan([
             'user-read' => 'Read user information such as email, name and phone number',

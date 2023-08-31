@@ -4,7 +4,7 @@ namespace Mtrajano\LaravelSwagger;
 
 interface GeneratorContract
 {
-    public function generate();
+    public function generate(): array;
 
-    public function setRouteFilter($routeFilter);
+    public function setRouteFilter(string $routeFilter): self;
 }

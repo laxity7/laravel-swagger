@@ -5,41 +5,38 @@ namespace Mtrajano\LaravelSwagger\Tests;
 use Mtrajano\LaravelSwagger\Generator;
 use Mtrajano\LaravelSwagger\LaravelSwaggerException;
 
-class GeneratorTest extends TestCase
+final class GeneratorTest extends TestCase
 {
-    protected $config;
-
-    protected $generator;
-
-    protected $endpoints = [
+    private const ENDPOINTS = [
         '/users',
         '/users/{id}',
         '/users/details',
         '/users/ping',
         '/api',
         '/api/store',
-        '/oauth/authorize',
         '/oauth/token',
+        '/oauth/authorize',
+        '/oauth/token/refresh',
         '/oauth/tokens',
         '/oauth/tokens/{token_id}',
-        '/oauth/token/refresh',
         '/oauth/clients',
         '/oauth/clients/{client_id}',
         '/oauth/scopes',
         '/oauth/personal-access-tokens',
         '/oauth/personal-access-tokens/{token_id}',
     ];
+    private array $config;
+    private Generator $generator;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->generator = new Generator(
-            $this->config = config('laravel-swagger')
-        );
+        $this->config = config('laravel-swagger');
+        $this->generator = new Generator($this->config);
     }
 
-    public function testRequiredBaseInfo()
+    public function testRequiredBaseInfo(): array
     {
         $docs = $this->generator->generate();
 
@@ -55,7 +52,7 @@ class GeneratorTest extends TestCase
         return $docs;
     }
 
-    public function testRequiredBaseInfoData()
+    public function testRequiredBaseInfoData(): void
     {
         $docs = $this->getDocsWithNewConfig([
             'title' => 'My awesome site!',
@@ -74,18 +71,18 @@ class GeneratorTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals('2.0', $docs['swagger']);
-        $this->assertEquals('My awesome site!', $docs['info']['title']);
-        $this->assertEquals('This is my awesome site, please enjoy it', $docs['info']['description']);
-        $this->assertEquals('1.0.0', $docs['info']['version']);
-        $this->assertEquals('https://example.com', $docs['host']);
-        $this->assertEquals('/api', $docs['basePath']);
-        $this->assertEquals(['https'], $docs['schemes']);
-        $this->assertEquals(['application/json'], $docs['consumes']);
-        $this->assertEquals(['application/json'], $docs['produces']);
+        $this->assertSame('2.0', $docs['swagger']);
+        $this->assertSame('My awesome site!', $docs['info']['title']);
+        $this->assertSame('This is my awesome site, please enjoy it', $docs['info']['description']);
+        $this->assertSame('1.0.0', $docs['info']['version']);
+        $this->assertSame('https://example.com', $docs['host']);
+        $this->assertSame('/api', $docs['basePath']);
+        $this->assertSame(['https'], $docs['schemes']);
+        $this->assertSame(['application/json'], $docs['consumes']);
+        $this->assertSame(['application/json'], $docs['produces']);
     }
 
-    public function testSecurityDefinitionsAccessCodeFlow()
+    public function testSecurityDefinitionsAccessCodeFlow(): void
     {
         $docs = $this->getDocsWithNewConfig([
             'authFlow' => 'accessCode',
@@ -95,15 +92,15 @@ class GeneratorTest extends TestCase
 
         $securityDefinition = $docs['securityDefinitions']['OAuth2'];
 
-        $this->assertEquals('oauth2', $securityDefinition['type']);
-        $this->assertEquals('accessCode', $securityDefinition['flow']);
+        $this->assertSame('oauth2', $securityDefinition['type']);
+        $this->assertSame('accessCode', $securityDefinition['flow']);
         $this->assertArrayHasKey('user-read', $securityDefinition['scopes']);
         $this->assertArrayHasKey('user-write', $securityDefinition['scopes']);
         $this->assertArrayHasKey('authorizationUrl', $securityDefinition);
         $this->assertArrayHasKey('tokenUrl', $securityDefinition);
     }
 
-    public function testSecurityDefinitionsImplicitFlow()
+    public function testSecurityDefinitionsImplicitFlow(): void
     {
         $docs = $this->getDocsWithNewConfig([
             'authFlow' => 'implicit',
@@ -111,13 +108,13 @@ class GeneratorTest extends TestCase
 
         $securityDefinition = $docs['securityDefinitions']['OAuth2'];
 
-        $this->assertEquals('oauth2', $securityDefinition['type']);
-        $this->assertEquals('implicit', $securityDefinition['flow']);
+        $this->assertSame('oauth2', $securityDefinition['type']);
+        $this->assertSame('implicit', $securityDefinition['flow']);
         $this->assertArrayHasKey('authorizationUrl', $securityDefinition);
         $this->assertArrayNotHasKey('tokenUrl', $securityDefinition);
     }
 
-    public function testSecurityDefinitionsPasswordFlow()
+    public function testSecurityDefinitionsPasswordFlow(): void
     {
         $docs = $this->getDocsWithNewConfig([
             'authFlow' => 'password',
@@ -125,13 +122,13 @@ class GeneratorTest extends TestCase
 
         $securityDefinition = $docs['securityDefinitions']['OAuth2'];
 
-        $this->assertEquals('oauth2', $securityDefinition['type']);
-        $this->assertEquals('password', $securityDefinition['flow']);
+        $this->assertSame('oauth2', $securityDefinition['type']);
+        $this->assertSame('password', $securityDefinition['flow']);
         $this->assertArrayNotHasKey('authorizationUrl', $securityDefinition);
         $this->assertArrayHasKey('tokenUrl', $securityDefinition);
     }
 
-    public function testSecurityDefinitionsApplicationFlow()
+    public function testSecurityDefinitionsApplicationFlow(): void
     {
         $docs = $this->getDocsWithNewConfig([
             'authFlow' => 'application',
@@ -139,13 +136,13 @@ class GeneratorTest extends TestCase
 
         $securityDefinition = $docs['securityDefinitions']['OAuth2'];
 
-        $this->assertEquals('oauth2', $securityDefinition['type']);
-        $this->assertEquals('application', $securityDefinition['flow']);
+        $this->assertSame('oauth2', $securityDefinition['type']);
+        $this->assertSame('application', $securityDefinition['flow']);
         $this->assertArrayNotHasKey('authorizationUrl', $securityDefinition);
         $this->assertArrayHasKey('tokenUrl', $securityDefinition);
     }
 
-    public function testNoParseSecurity()
+    public function testNoParseSecurity(): void
     {
         $docs = $this->getDocsWithNewConfig([
             'parseSecurity' => false,
@@ -154,7 +151,7 @@ class GeneratorTest extends TestCase
         $this->assertArrayNotHasKey('securityDefinitions', $docs);
     }
 
-    public function testInvalidFlowPassed()
+    public function testInvalidFlowPassed(): void
     {
         $this->expectException(LaravelSwaggerException::class);
 
@@ -166,9 +163,9 @@ class GeneratorTest extends TestCase
     /**
      * @depends testRequiredBaseInfo
      */
-    public function testHasPaths($docs)
+    public function testHasPaths(array $docs): array
     {
-        $this->assertEquals($this->endpoints, array_keys($docs['paths']));
+        $this->assertSame(self::ENDPOINTS, array_keys($docs['paths']));
 
         return $docs['paths'];
     }
@@ -176,7 +173,7 @@ class GeneratorTest extends TestCase
     /**
      * @depends testHasPaths
      */
-    public function testPathMethods($paths)
+    public function testPathMethods(array $paths): void
     {
         $this->assertArrayHasKey('get', $paths['/users']);
         $this->assertArrayNotHasKey('head', $paths['/users']);
@@ -190,7 +187,7 @@ class GeneratorTest extends TestCase
     /**
      * @depends testHasPaths
      */
-    public function testRouteData($paths)
+    public function testRouteData(array $paths): void
     {
         $expectedPostDescription = <<<'EOD'
 Data is validated [see description here](https://example.com) so no bad data can be passed.
@@ -203,49 +200,49 @@ EOD;
         $this->assertArrayHasKey('deprecated', $paths['/users']['get']);
         $this->assertArrayNotHasKey('parameters', $paths['/users']['get']);
 
-        $this->assertEquals('Get a list of of users in the application', $paths['/users']['get']['summary']);
-        $this->assertEquals(false, $paths['/users']['get']['deprecated']);
-        $this->assertEquals('', $paths['/users']['get']['description']);
+        $this->assertSame('Get a list of of users in the application', $paths['/users']['get']['summary']);
+        $this->assertFalse($paths['/users']['get']['deprecated']);
+        $this->assertSame('', $paths['/users']['get']['description']);
 
-        $this->assertEquals('Store a new user in the application', $paths['/users']['post']['summary']);
-        $this->assertEquals(true, $paths['/users']['post']['deprecated']);
-        $this->assertEquals($expectedPostDescription, $paths['/users']['post']['description']);
+        $this->assertSame('Store a new user in the application', $paths['/users']['post']['summary']);
+        $this->assertTrue($paths['/users']['post']['deprecated']);
+        $this->assertSame($expectedPostDescription, $paths['/users']['post']['description']);
 
-        $this->assertEquals('', $paths['/users/{id}']['get']['summary']);
-        $this->assertEquals(false, $paths['/users/{id}']['get']['deprecated']);
-        $this->assertEquals('', $paths['/users/{id}']['get']['description']);
+        $this->assertSame('', $paths['/users/{id}']['get']['summary']);
+        $this->assertFalse($paths['/users/{id}']['get']['deprecated']);
+        $this->assertSame('', $paths['/users/{id}']['get']['description']);
 
-        $this->assertEquals('', $paths['/users/details']['get']['summary']);
-        $this->assertEquals(true, $paths['/users/details']['get']['deprecated']);
-        $this->assertEquals('', $paths['/users/details']['get']['description']);
+        $this->assertSame('', $paths['/users/details']['get']['summary']);
+        $this->assertTrue($paths['/users/details']['get']['deprecated']);
+        $this->assertSame('', $paths['/users/details']['get']['description']);
     }
 
     /**
      * @depends testHasPaths
      */
-    public function testRouteScopes($paths)
+    public function testRouteScopes(array $paths): void
     {
-        $this->assertEquals(['user-read'], $paths['/users']['get']['security'][Generator::SECURITY_DEFINITION_NAME]);
-        $this->assertEquals(['user-write', 'user-read'], $paths['/users']['post']['security'][Generator::SECURITY_DEFINITION_NAME]);
+        $this->assertSame(['user-read'], $paths['/users']['get']['security'][Generator::SECURITY_DEFINITION_NAME]);
+        $this->assertSame(['user-read', 'user-write'], $paths['/users']['post']['security'][Generator::SECURITY_DEFINITION_NAME]);
     }
 
-    public function testOverwriteIgnoreMethods()
+    public function testOverwriteIgnoreMethods(): void
     {
         $docs = $this->getDocsWithNewConfig(['ignoredMethods' => []]);
 
         $this->assertArrayHasKey('head', $docs['paths']['/users']);
     }
 
-    public function testParseDocBlockFalse()
+    public function testParseDocBlockFalse(): void
     {
         $docs = $this->getDocsWithNewConfig(['parseDocBlock' => false]);
 
-        $this->assertEquals('', $docs['paths']['/users']['post']['summary']);
-        $this->assertEquals(false, $docs['paths']['/users']['post']['deprecated']);
-        $this->assertEquals('', $docs['paths']['/users']['post']['description']);
+        $this->assertSame('', $docs['paths']['/users']['post']['summary']);
+        $this->assertFalse($docs['paths']['/users']['post']['deprecated']);
+        $this->assertSame('', $docs['paths']['/users']['post']['description']);
     }
 
-    public function testOptionalData()
+    public function testOptionalData(): void
     {
         $docs = $this->getDocsWithNewConfig([
             'schemes' => [
@@ -273,36 +270,30 @@ EOD;
     }
 
     /**
-     * @param string|null $routeFilter
-     * @param array $expectedRoutes
-     *
      * @dataProvider filtersRoutesProvider
      */
-    public function testFiltersRoutes($routeFilter, $expectedRoutes)
+    public function testFiltersRoutes(?string $routeFilter, array $expectedRoutes): void
     {
-        $this->generator = new Generator(
-            $this->config,
-            $routeFilter
-        );
+        $this->generator = new Generator([...$this->config, 'routeFilter' => $routeFilter]);
 
         $docs = $this->generator->generate();
 
-        $this->assertEquals($expectedRoutes, array_keys($docs['paths']));
+        $this->assertSame($expectedRoutes, array_keys($docs['paths']));
     }
 
     /**
      * @return array
      */
-    public function filtersRoutesProvider()
+    public static function filtersRoutesProvider(): array
     {
         return [
-            'No Filter' => [null, $this->endpoints],
+            'No Filter' => [null, self::ENDPOINTS],
             '/api Filter' => ['/api', ['/api', '/api/store']],
             '/=nonexistant Filter' => ['/nonexistant', []],
         ];
     }
 
-    private function getDocsWithNewConfig(array $config)
+    private function getDocsWithNewConfig(array $config): array
     {
         $config = array_merge($this->config, $config);
 
