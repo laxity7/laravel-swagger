@@ -29,9 +29,11 @@ class TestCase extends OrchestraTestCase
         $router = $app['router'];
         $router->middleware(['some-middleware', 'scope:user-read'])->group(static function () use ($router) {
             $router->get('/users', [UserController::class, 'index']);
-            $router->get('/users/{id}', [UserController::class, 'show']);
+            $router->get('/users/{id}', [UserController::class, 'show'])->whereNumber('id');
             $router->post('/users', [UserController::class, 'store'])->middleware('scopes:user-write,user-read');
-            $router->get('/users/details', [UserController::class, 'details']);
+            $router->get('/users/{id}/details', [UserController::class, 'details']);
+            $router->get('/users/{id}/details/{detail_id?}', [UserController::class, 'details'])->whereNumber('id')->whereUuid('detail_id');
+            $router->get('/users/{foo}', [UserController::class, 'details'])->whereIn('foo', ['foo', 'bar']);
             $router->get('/users/ping', static fn() => 'pong');
         });
 

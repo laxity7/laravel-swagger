@@ -5,7 +5,11 @@ namespace Mtrajano\LaravelSwagger;
 use Illuminate\Routing\Route as LaravelRoute;
 use Laravel\Passport\Passport;
 use Mtrajano\LaravelSwagger\DataObjects\Route;
-use phpDocumentor\Reflection\DocBlockFactory;
+use Mtrajano\LaravelSwagger\Enums\Method;
+use Mtrajano\LaravelSwagger\Parsers\MethodParser;
+use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\ParameterGenerator;
+use Mtrajano\LaravelSwagger\Parsers\Requests\RequestParser;
+use Mtrajano\LaravelSwagger\Parsers\ResponseParser;
 
 final class Generator implements GeneratorContract
 {
@@ -13,8 +17,11 @@ final class Generator implements GeneratorContract
     public const OAUTH_TOKEN_PATH = '/oauth/token';
     public const OAUTH_AUTHORIZE_PATH = '/oauth/authorize';
 
+    public const TAG_IGNORE = 'ignore';
+    public const TAG_REQUEST = 'request';
+    public const TAG_RESPONSE = 'response';
+
     private string|null $routeFilter;
-    private DocBlockFactory $docParser;
     private bool $hasSecurityDefinitions = false;
 
     public function __construct(
@@ -34,12 +41,12 @@ final class Generator implements GeneratorContract
          *     parseSecurity: bool,
          *     authFlow: string,
          *     generatorClass: string,
+         *     requestsGenerators: string[]|ParameterGenerator[],
          * }
          */
         private readonly array $config
     ) {
         $this->routeFilter = $config['routeFilter'] ?? null;
-        $this->docParser = DocBlockFactory::createInstance();
     }
 
     public function setRouteFilter(string $routeFilter): self
@@ -58,6 +65,7 @@ final class Generator implements GeneratorContract
             $this->hasSecurityDefinitions = true;
         }
 
+        $ignoredMethods = Method::fromArray($this->config['ignoredMethods']);
         $paths = [];
         foreach ($this->getAppRoutes() as $route) {
             if ($this->isFilteredRoute($route)) {
@@ -66,18 +74,20 @@ final class Generator implements GeneratorContract
             $paths[$route->uri()] ??= [];
 
             foreach ($route->methods() as $method) {
-                if (in_array($method, $this->config['ignoredMethods'], true)) {
+                if ($method->isOneOf(...$ignoredMethods)) {
                     continue;
                 }
 
-                $routeGenerator = new MethodParser(
+                $methodParser = new MethodParser(
                     route: $route,
-                    methodName: $method,
+                    requestParser: new RequestParser($route, $method, $this->config['requestsGenerators']),
+                    responseParser: new ResponseParser($route, $method),
                     hasSecurityDefinitions: $this->hasSecurityDefinitions,
-                    parseDocBlock: $this->config['parseDocBlock'],
-                    docParser: $this->docParser,
                 );
-                $paths[$route->uri()][$method] = $routeGenerator->parse()->toArray();
+                if ($methodParser->isSkipped()) {
+                    continue;
+                }
+                $paths[$route->uri()][$method->lowerValue()] = $methodParser->parse()->toArray();
             }
         }
         $docs['paths'] = $paths;
@@ -120,7 +130,10 @@ final class Generator implements GeneratorContract
      */
     private function getAppRoutes(): array
     {
-        return array_map(fn(LaravelRoute $route) => new Route($route), app('router')->getRoutes()->getRoutes());
+        return array_map(
+            fn(LaravelRoute $route) => new Route($route, $this->config['parseDocBlock']),
+            app('router')->getRoutes()->getRoutes()
+        );
     }
 
     private function generateSecurityDefinitions(): array

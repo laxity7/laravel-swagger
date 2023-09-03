@@ -4,8 +4,13 @@ namespace Mtrajano\LaravelSwagger\DataObjects;
 
 use Illuminate\Routing\Route as LaravelRoute;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use function Mtrajano\LaravelSwagger\strip_optional_char;
+use Mtrajano\LaravelSwagger\Enums\Method;
+use Mtrajano\LaravelSwagger\Parsers\ReflectionHelper;
+use phpDocumentor\Reflection\DocBlock;
+use ReflectionClass;
+use ReflectionFunction;
+use ReflectionMethod;
+use ReflectionParameter;
 
 final class Route
 {
@@ -13,26 +18,20 @@ final class Route
     private array $middleware;
 
     public function __construct(
-        private LaravelRoute $route
+        public readonly LaravelRoute $route,
+        public readonly bool $parseDocBlock = true,
     ) {
-        $this->route = $route;
         $this->middleware = $this->formatMiddleware();
     }
 
     public function originalUri(): string
     {
-        $uri = $this->route->uri();
-
-        if (!Str::startsWith($uri, '/')) {
-            $uri = '/'.$uri;
-        }
-
-        return $uri;
+        return '/'.ltrim($this->route->uri(), '/');
     }
 
     public function uri(): string
     {
-        return strip_optional_char($this->originalUri());
+        return str_replace('?', '', $this->originalUri());
     }
 
     /**
@@ -43,17 +42,57 @@ final class Route
         return $this->middleware;
     }
 
+    public function getReflectionObject(): ?ReflectionClass
+    {
+        return ReflectionHelper::getRouteClass($this->route->getAction());
+    }
+
+    public function getReflectionMethod(): ReflectionFunction|ReflectionMethod|null
+    {
+        return ReflectionHelper::getRouteAction($this->route->getAction());
+    }
+
+    public function getMethodDocBlock(): ?DocBlock
+    {
+        if (!$this->parseDocBlock) {
+            return null;
+        }
+
+        $docBlock = $this->getReflectionMethod()?->getDocComment() ?: '';
+        if (empty($docBlock)) {
+            return null;
+        }
+
+        return ReflectionHelper::parseDocBlock($docBlock);
+    }
+
+    /**
+     * @return ReflectionParameter[]
+     */
+    public function getMethodParameters(): array
+    {
+        return $this->getReflectionMethod()?->getParameters() ?? [];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function pathParameters(): array
+    {
+        return $this->route->parameterNames();
+    }
+
     public function action(): string
     {
         return $this->route->getActionName();
     }
 
     /**
-     * @return string[]
+     * @return Method[]
      */
     public function methods(): array
     {
-        return array_map('strtolower', $this->route->methods());
+        return Method::fromArray($this->route->methods());
     }
 
     /**

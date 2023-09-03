@@ -10,7 +10,9 @@ final class GeneratorTest extends TestCase
     private const ENDPOINTS = [
         '/users',
         '/users/{id}',
-        '/users/details',
+        '/users/{id}/details',
+        '/users/{id}/details/{detail_id}',
+        '/users/{foo}',
         '/users/ping',
         '/api',
         '/api/store',
@@ -181,7 +183,7 @@ final class GeneratorTest extends TestCase
 
         $this->assertArrayHasKey('get', $paths['/users/{id}']);
 
-        $this->assertArrayHasKey('get', $paths['/users/details']);
+        $this->assertArrayHasKey('get', $paths['/users/{id}/details']);
     }
 
     /**
@@ -197,11 +199,10 @@ EOD;
         $this->assertArrayHasKey('summary', $paths['/users']['get']);
         $this->assertArrayHasKey('description', $paths['/users']['get']);
         $this->assertArrayHasKey('responses', $paths['/users']['get']);
-        $this->assertArrayHasKey('deprecated', $paths['/users']['get']);
+        $this->assertArrayNotHasKey('deprecated', $paths['/users']['get']);
         $this->assertArrayNotHasKey('parameters', $paths['/users']['get']);
 
         $this->assertSame('Get a list of of users in the application', $paths['/users']['get']['summary']);
-        $this->assertFalse($paths['/users']['get']['deprecated']);
         $this->assertSame('', $paths['/users']['get']['description']);
 
         $this->assertSame('Store a new user in the application', $paths['/users']['post']['summary']);
@@ -209,12 +210,12 @@ EOD;
         $this->assertSame($expectedPostDescription, $paths['/users']['post']['description']);
 
         $this->assertSame('', $paths['/users/{id}']['get']['summary']);
-        $this->assertFalse($paths['/users/{id}']['get']['deprecated']);
+        $this->assertArrayNotHasKey('deprecated', $paths['/users/{id}']['get']);
         $this->assertSame('', $paths['/users/{id}']['get']['description']);
 
-        $this->assertSame('', $paths['/users/details']['get']['summary']);
-        $this->assertTrue($paths['/users/details']['get']['deprecated']);
-        $this->assertSame('', $paths['/users/details']['get']['description']);
+        $this->assertSame('', $paths['/users/{id}/details']['get']['summary']);
+        $this->assertTrue($paths['/users/{id}/details']['get']['deprecated']);
+        $this->assertSame('', $paths['/users/{id}/details']['get']['description']);
     }
 
     /**
@@ -238,7 +239,7 @@ EOD;
         $docs = $this->getDocsWithNewConfig(['parseDocBlock' => false]);
 
         $this->assertSame('', $docs['paths']['/users']['post']['summary']);
-        $this->assertFalse($docs['paths']['/users']['post']['deprecated']);
+        $this->assertArrayNotHasKey('deprecated', $docs['paths']['/users']['post']);
         $this->assertSame('', $docs['paths']['/users']['post']['description']);
     }
 

@@ -2,6 +2,7 @@
     "name": "laxity7/laravel-swagger",
     "description": "Auto generates the swagger documentation for a laravel project",
     "license": "MIT",
+    "homepage": "https://github.com/laxity7/laravel-swagger",
     "authors": [
         {
             "name": "Mauricio Trajano",
@@ -23,9 +24,6 @@
         "roave/security-advisories": "dev-latest"
     },
     "autoload": {
-        "files": [
-            "src/helpers.php"
-        ],
         "psr-4": {
             "Mtrajano\\LaravelSwagger\\": "src/"
         }

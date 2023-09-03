@@ -17,6 +17,9 @@ final class Path
     public function toArray(): array
     {
         $data = (array) $this;
+        if (!$this->deprecated) {
+            unset($data['deprecated']);
+        }
 
         foreach (['parameters', 'security'] as $item) {
             if (empty($data[$item])) {

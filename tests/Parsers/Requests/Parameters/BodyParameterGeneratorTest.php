@@ -1,9 +1,9 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Parameters;
+namespace Mtrajano\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
 use Illuminate\Validation\Rule;
-use Mtrajano\LaravelSwagger\Parameters\BodyParameterGenerator;
+use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Rules\Uppercase as UppercaseRule;
 use Mtrajano\LaravelSwagger\Tests\TestCase;
 
@@ -210,7 +210,7 @@ final class BodyParameterGeneratorTest extends TestCase
 
     private function getBodyParameters(array $rules): array
     {
-        $bodyParameters = (new BodyParameterGenerator($rules))->getParameters();
+        $bodyParameters = (new BodyParameterGenerator())->getParametersFromRules($rules);
 
         return current($bodyParameters);
     }

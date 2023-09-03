@@ -3,6 +3,7 @@
 namespace Mtrajano\LaravelSwagger\Tests\Stubs\Controllers;
 
 use Illuminate\Routing\Controller;
+use Mtrajano\LaravelSwagger\Attributes\Request;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\UserShowRequest;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\UserStoreRequest;
 
@@ -14,7 +15,27 @@ final class UserController extends Controller
         return json_encode([['first_name' => 'John'], ['first_name' => 'Jack']]);
     }
 
-    public function show(UserShowRequest $request, int $id): string
+    /**
+     * @param  UserShowRequest  $request
+     * @param  int  $id  User id
+     * @param $uuid
+     * @return string
+     */
+    public function show(UserShowRequest $request, int $id, $uuid): string
+    {
+        return json_encode(['first_name' => 'John']);
+    }
+
+    /**
+     * @request  UserShowRequest
+     */
+    public function showFromDoc(): string
+    {
+        return json_encode(['first_name' => 'John']);
+    }
+
+    #[Request(UserShowRequest::class)]
+    public function showFromAttribute(): string
     {
         return json_encode(['first_name' => 'John']);
     }
@@ -25,7 +46,8 @@ final class UserController extends Controller
      * Data is validated [see description here](https://example.com) so no bad data can be passed.
      * Please read the documentation for more information
      *
-     * @param UserStoreRequest $request
+     * @param  UserStoreRequest  $request
+     * @return string
      * @deprecated
      */
     public function store(UserStoreRequest $request): string

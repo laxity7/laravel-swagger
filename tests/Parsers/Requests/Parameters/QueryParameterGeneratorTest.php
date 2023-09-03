@@ -1,9 +1,9 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Parameters;
+namespace Mtrajano\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
 use Illuminate\Validation\Rule;
-use Mtrajano\LaravelSwagger\Parameters\QueryParameterGenerator;
+use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator;
 use Mtrajano\LaravelSwagger\Tests\TestCase;
 
 final class QueryParameterGeneratorTest extends TestCase
@@ -108,6 +108,6 @@ final class QueryParameterGeneratorTest extends TestCase
 
     private function getQueryParameters(array $rules): array
     {
-        return (new QueryParameterGenerator($rules))->getParameters();
+        return (new QueryParameterGenerator())->getParametersFromRules($rules);
     }
 }

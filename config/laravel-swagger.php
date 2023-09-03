@@ -1,5 +1,9 @@
 <?php
 
+use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
+use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\PathParameterGenerator;
+use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator;
+
 return [
 
     /*
@@ -99,4 +103,10 @@ return [
     */
 
     'generatorClass' => Mtrajano\LaravelSwagger\Generator::class,
+
+    'requestsGenerators' => [
+        PathParameterGenerator::class,
+        BodyParameterGenerator::class,
+        QueryParameterGenerator::class,
+    ],
 ];

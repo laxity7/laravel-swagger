@@ -1,33 +1,30 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parameters;
+namespace Mtrajano\LaravelSwagger\Parsers\Requests\Generators;
+
+use Mtrajano\LaravelSwagger\DataObjects\Route;
+use Mtrajano\LaravelSwagger\Enums\Method;
+use Mtrajano\LaravelSwagger\Parsers\Requests\RulesParamHelper;
 
 final class BodyParameterGenerator implements ParameterGenerator
 {
-    use Concerns\GeneratesFromRules;
-
-    public function __construct(
-        readonly private array $rules
-    ) {
-    }
-
-    public function getParameters(): array
+    public function getParametersFromRules(array $rules): array
     {
         $required = [];
         $properties = [];
-        foreach ($this->rules as $param => $rule) {
-            $paramRules = $this->splitRules($rule);
+        foreach ($rules as $param => $rule) {
+            $paramRules = RulesParamHelper::splitRules($rule);
             $nameTokens = explode('.', $param);
 
             $properties = $this->addToProperties($nameTokens, $paramRules, $properties);
 
-            if ($this->isParamRequired($paramRules)) {
+            if (RulesParamHelper::isParamRequired($paramRules)) {
                 $required[] = $param;
             }
         }
 
         $params = [
-            'in' => $this->getParamLocation(),
+            'in' => 'body',
             'name' => 'body',
             'description' => '',
             'schema' => [
@@ -43,9 +40,9 @@ final class BodyParameterGenerator implements ParameterGenerator
         return [$params];
     }
 
-    public function getParamLocation(): string
+    public function getParameters(Route $route): array
     {
-        return 'body';
+        return $this->getParametersFromRules(RulesParamHelper::getFormRules($route));
     }
 
     private function addToProperties(array $nameTokens, array $rules, array $properties = []): array
@@ -62,7 +59,7 @@ final class BodyParameterGenerator implements ParameterGenerator
         if (!empty($nameTokens)) {
             $type = $this->getNestedParamType($nameTokens);
         } else {
-            $type = $this->getParamType($rules);
+            $type = RulesParamHelper::getParamType($rules);
         }
 
         if (!isset($properties[$name])) {
@@ -96,7 +93,7 @@ final class BodyParameterGenerator implements ParameterGenerator
             'type' => $type,
         ];
 
-        if ($enums = $this->getEnumValues($rules)) {
+        if ($enums = RulesParamHelper::getEnumValues($rules)) {
             $propObj['enum'] = $enums;
         }
 
@@ -107,5 +104,10 @@ final class BodyParameterGenerator implements ParameterGenerator
         }
 
         return $propObj;
+    }
+
+    public function isNeedParsing(Route $route, Method $method): bool
+    {
+        return $method->isOneOf(Method::POST, Method::PUT, Method::PATCH);
     }
 }
