@@ -234,15 +234,6 @@ EOD;
         $this->assertArrayHasKey('head', $docs['paths']['/users']);
     }
 
-    public function testParseDocBlockFalse(): void
-    {
-        $docs = $this->getDocsWithNewConfig(['parseDocBlock' => false]);
-
-        $this->assertSame('', $docs['paths']['/users']['post']['summary']);
-        $this->assertArrayNotHasKey('deprecated', $docs['paths']['/users']['post']);
-        $this->assertSame('', $docs['paths']['/users']['post']['description']);
-    }
-
     public function testOptionalData(): void
     {
         $docs = $this->getDocsWithNewConfig([

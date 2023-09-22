@@ -7,11 +7,6 @@ use Illuminate\Console\Command;
 class GenerateSwaggerDoc extends Command
 {
     /**
-     * @var GeneratorContract
-     */
-    private $generator;
-
-    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -28,9 +23,9 @@ class GenerateSwaggerDoc extends Command
      */
     protected $description = 'Automatically generates a swagger documentation file for this application';
 
-    public function __construct(GeneratorContract $generator)
-    {
-        $this->generator = $generator;
+    public function __construct(
+        private GeneratorContract $generator
+    ) {
         parent::__construct();
     }
 

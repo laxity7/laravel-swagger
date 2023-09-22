@@ -3,9 +3,9 @@
 namespace Mtrajano\LaravelSwagger\Parsers\Requests\Generators;
 
 use Illuminate\Support\Str;
-use Mtrajano\LaravelSwagger\DataObjects\Route;
 use Mtrajano\LaravelSwagger\Enums\Method;
 use Mtrajano\LaravelSwagger\Parsers\Requests\EnumExtractor;
+use Mtrajano\LaravelSwagger\Parsers\Route;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use UnitEnum;
 
@@ -18,7 +18,7 @@ final class PathParameterGenerator implements ParameterGenerator
         $this->route = $route;
 
         $parameters = [];
-        foreach ($this->route->pathParameters() as $variable) {
+        foreach ($this->route->pathParameterNames() as $variable) {
             $parameters[] = [
                 'in' => 'path',
                 'name' => $variable,
@@ -33,24 +33,24 @@ final class PathParameterGenerator implements ParameterGenerator
 
     private function getDescription(string $paramName): string
     {
-        $def = Str::headline($paramName);
+        $default = Str::headline($paramName);
         $docBlock = $this->route->getMethodDocBlock();
         if ($docBlock === null || !$docBlock->hasTag('param')) {
-            return $def;
+            return $default;
         }
         /** @var Param $param */
         foreach ($docBlock->getTagsByName('param') as $param) {
             if ($param->getVariableName() === $paramName) {
-                return $param->getDescription()?->render() ?? $def;
+                return $param->getDescription()?->render() ?? $default;
             }
         }
 
-        return $def;
+        return $default;
     }
 
     /**
      * @param  string  $paramName
-     * @return array{type: string, pattern?: string, default?: mixed}
+     * @return array{type: string, pattern?: string, default?: mixed, format?: string, enum: array}
      */
     private function getType(string $paramName): array
     {
@@ -62,8 +62,7 @@ final class PathParameterGenerator implements ParameterGenerator
             $type['default'] = $this->getDefault($paramName);
         }
 
-        $parameters = $this->route->getMethodParameters();
-        foreach ($parameters as $parameter) {
+        foreach ($this->route->getParameters() as $parameter) {
             if ($parameter->getName() !== $paramName) {
                 continue;
             }
@@ -82,7 +81,7 @@ final class PathParameterGenerator implements ParameterGenerator
     }
 
     /**
-     * Convert PHP type to Swagger type
+     * Convert a PHP type to a Swagger type
      * @param  array{type: string, pattern?: string, default?: mixed}  $type
      * @return array{type: string, pattern?: string, default?: mixed, format?: string, enum: array}
      */

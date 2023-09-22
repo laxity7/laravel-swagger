@@ -2,7 +2,7 @@
 
 namespace Mtrajano\LaravelSwagger\Parsers\Requests;
 
-class Parameter implements \ArrayAccess
+class Parameter
 {
     public function __construct(
         public readonly string $in,
@@ -11,25 +11,5 @@ class Parameter implements \ArrayAccess
         public readonly bool $required,
         public readonly string $description,
     ) {
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->{$offset});
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->{$offset};
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        throw new \Exception('Parameter is immutable');
-    }
-
-    public function offsetUnset($offset)
-    {
-        throw new \Exception('Parameter is immutable');
     }
 }

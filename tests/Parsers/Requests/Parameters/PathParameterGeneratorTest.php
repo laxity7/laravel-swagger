@@ -3,8 +3,8 @@
 namespace Mtrajano\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
 use Illuminate\Routing\Route as LaravelRoute;
-use Mtrajano\LaravelSwagger\DataObjects\Route;
 use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\PathParameterGenerator;
+use Mtrajano\LaravelSwagger\Parsers\Route;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Enums\IntEnum;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Enums\NamedEnum;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Enums\StringEnum;

@@ -2,6 +2,8 @@
 
 namespace Mtrajano\LaravelSwagger\Enums;
 
+use InvalidArgumentException;
+
 enum Method
 {
     case GET;
@@ -31,6 +33,7 @@ enum Method
         if ($value instanceof self) {
             return $value;
         }
+
         return match (strtoupper($value)) {
             'GET' => self::GET,
             'POST' => self::POST,
@@ -39,7 +42,7 @@ enum Method
             'DELETE' => self::DELETE,
             'OPTIONS' => self::OPTIONS,
             'HEAD' => self::HEAD,
-            default => throw new \InvalidArgumentException("Invalid method: {$value}"),
+            default => throw new InvalidArgumentException("Invalid method: {$value}"),
         };
     }
 

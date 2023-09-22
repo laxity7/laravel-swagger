@@ -7,7 +7,6 @@ use Laravel\Passport\Http\Middleware\CheckForAnyScope;
 use Laravel\Passport\Http\Middleware\CheckScopes;
 use Mtrajano\LaravelSwagger\DataObjects;
 use Mtrajano\LaravelSwagger\DataObjects\Path;
-use Mtrajano\LaravelSwagger\DataObjects\Route;
 use Mtrajano\LaravelSwagger\Generator;
 use Mtrajano\LaravelSwagger\Parsers\Requests\RequestParser;
 
@@ -47,19 +46,15 @@ final class MethodParser
         }
 
         $security = [];
-        foreach ($this->route->middleware() as $middleware) {
+        foreach ($this->route->middleware as $middleware) {
             if (!$this->isPassportScopeMiddleware($middleware)) {
                 continue;
             }
-
-            $security = [
-                ...$security,
-                ...$middleware->parameters
-            ];
+            $security[] = $middleware->parameters;
         }
 
         if (!empty($security)) {
-            $security = [Generator::SECURITY_DEFINITION_NAME => array_unique($security)];
+            $security = [Generator::SECURITY_DEFINITION_NAME => array_unique(array_merge(...$security))];
         }
 
         return $security;

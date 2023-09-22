@@ -3,7 +3,7 @@
 namespace Mtrajano\LaravelSwagger\Parsers;
 
 use Illuminate\Routing\RouteAction;
-use Illuminate\Support\Reflector;
+use Illuminate\Support\Reflector as IlluminateReflector;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
 use Laravel\SerializableClosure\UnsignedSerializableClosure;
@@ -12,6 +12,7 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
+use Reflector;
 use WeakMap;
 
 final class ReflectionHelper
@@ -25,7 +26,7 @@ final class ReflectionHelper
     {
     }
 
-    private static function cache(string|callable $key, callable $value): ReflectionFunction|ReflectionMethod|ReflectionClass|null
+    private static function cache(string|callable|object $key, callable $value): ReflectionFunction|ReflectionMethod|ReflectionClass|DocBlock
     {
         self::$cache ??= new WeakMap();
 
@@ -43,6 +44,11 @@ final class ReflectionHelper
         return self::$cache[$key];
     }
 
+    public static function getClass(string|object $class, object $key): ReflectionClass
+    {
+        return self::cache($key, static fn() => new ReflectionClass($class));
+    }
+
     public static function getRouteClass(array $action): ?ReflectionClass
     {
         $key = $action['uses'];
@@ -57,7 +63,7 @@ final class ReflectionHelper
 
     public static function getRouteAction(array $action): ReflectionFunction|ReflectionMethod|null
     {
-        return self::cache($action['uses'], fn() => self::getReflectionMethod($action));
+        return self::cache($action['uses'], static fn() => self::getReflectionMethod($action));
     }
 
     private static function getDocBlockParser(): DocBlockFactory
@@ -68,9 +74,14 @@ final class ReflectionHelper
         return self::$docParser;
     }
 
-    public static function parseDocBlock(string $docComment): DocBlock
+    public static function parseDocBlock(Reflector $reflection): DocBlock
     {
-        return self::getDocBlockParser()->create($docComment);
+        return self::cache($reflection, static fn() => self::parseDocBlockFromString($reflection->getDocComment() ?: '/** */'));
+    }
+
+    public static function parseDocBlockFromString(string $docComment): DocBlock
+    {
+        return self::getDocBlockParser()->create($docComment ?: '/** */');
     }
 
     private static function getReflectionMethod(array $action): ReflectionFunction|ReflectionMethod|null
@@ -84,7 +95,7 @@ final class ReflectionHelper
         }
 
         [$class, $method] = Str::parseCallback($callback);
-        if (!method_exists($class, $method) && Reflector::isCallable($class, $method)) {
+        if (!method_exists($class, $method) && IlluminateReflector::isCallable($class, $method)) {
             return null;
         }
 

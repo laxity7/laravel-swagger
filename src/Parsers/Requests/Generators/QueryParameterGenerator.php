@@ -2,9 +2,9 @@
 
 namespace Mtrajano\LaravelSwagger\Parsers\Requests\Generators;
 
-use Mtrajano\LaravelSwagger\DataObjects\Route;
 use Mtrajano\LaravelSwagger\Enums\Method;
 use Mtrajano\LaravelSwagger\Parsers\Requests\RulesParamHelper;
+use Mtrajano\LaravelSwagger\Parsers\Route;
 
 final class QueryParameterGenerator implements ParameterGenerator
 {
@@ -50,7 +50,9 @@ final class QueryParameterGenerator implements ParameterGenerator
 
     public function getParameters(Route $route): array
     {
-        return $this->getParametersFromRules(RulesParamHelper::getFormRules($route));
+        $rules = $route->request?->getRules() ?? [];
+
+        return $this->getParametersFromRules($rules);
     }
 
     private function addArrayTypes(array $params, array $arrayTypes): array

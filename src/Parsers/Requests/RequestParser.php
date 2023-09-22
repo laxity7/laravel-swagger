@@ -2,9 +2,10 @@
 
 namespace Mtrajano\LaravelSwagger\Parsers\Requests;
 
-use Mtrajano\LaravelSwagger\DataObjects\Route;
+use Exception;
 use Mtrajano\LaravelSwagger\Enums\Method;
 use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\ParameterGenerator;
+use Mtrajano\LaravelSwagger\Parsers\Route;
 
 final class RequestParser
 {
@@ -20,16 +21,18 @@ final class RequestParser
     {
         $parameters = [];
         foreach ($this->generators as $generator) {
+            if (!is_subclass_of($generator, ParameterGenerator::class)) {
+                throw new Exception(sprintf('Generator %s must implement %s', $generator::class, ParameterGenerator::class));
+            }
             /** @var ParameterGenerator $generator */
             $generator = app($generator);
-            if ($generator->isNeedParsing($this->route, $this->methodName)) {
-                $parameters = [
-                    ...$parameters,
-                    ...$generator->getParameters($this->route)
-                ];
+            if (!$generator->isNeedParsing($this->route, $this->methodName)) {
+                continue;
             }
+
+            $parameters[] = $generator->getParameters($this->route);
         }
 
-        return $parameters;
+        return array_merge(...$parameters);
     }
 }

@@ -2,59 +2,12 @@
 
 namespace Mtrajano\LaravelSwagger\Parsers\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Mtrajano\LaravelSwagger\Attributes\Request;
-use Mtrajano\LaravelSwagger\DataObjects\Route;
-use Mtrajano\LaravelSwagger\Generator;
-use Mtrajano\LaravelSwagger\Parsers\ReflectionHelper;
 
 final class RulesParamHelper
 {
     private function __construct()
     {
-    }
-
-    public static function getFormRules(Route $route): array
-    {
-        $reflectionMethod = $route->getReflectionMethod();
-        if (!$reflectionMethod) {
-            return [];
-        }
-
-        foreach ($reflectionMethod->getParameters() as $parameter) {
-            $className = $parameter->getType()?->getName();
-            if (!$className) {
-                continue;
-            }
-
-            if (is_subclass_of($className, FormRequest::class)) {
-                return app($className)->rules();
-            }
-        }
-
-        $className = Arr::first($reflectionMethod->getAttributes(Request::class))?->newInstance()->request;
-        if ($className !== null && is_subclass_of($className, FormRequest::class)) {
-            return app($className)->rules();
-        }
-
-        $docBlock = $route->getMethodDocBlock();
-        if (!$docBlock?->hasTag(Generator::TAG_REQUEST)) {
-            return [];
-        }
-
-        $tag = $docBlock?->getTagsByName(Generator::TAG_REQUEST)[0] ?? null;
-        if ($tag === null) {
-            return [];
-        }
-        $className = $tag->getDescription()->render();
-        $className = ReflectionHelper::normalizeClassType($route->getReflectionObject(), $className);
-        if (is_subclass_of($className, FormRequest::class)) {
-            return app($className)->rules();
-        }
-
-        return [];
     }
 
     public static function splitRules(array|string $rules): array

@@ -2,92 +2,74 @@
 
 namespace Mtrajano\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
-use Illuminate\Validation\Rule;
+use Illuminate\Routing\Route as LaravelRoute;
+use Mtrajano\LaravelSwagger\Attributes\Request;
 use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Rules\Uppercase as UppercaseRule;
+use Mtrajano\LaravelSwagger\Parsers\Route;
+use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\BodyParameterRequest;
 use Mtrajano\LaravelSwagger\Tests\TestCase;
 
 final class BodyParameterGeneratorTest extends TestCase
 {
-    public function testStructure(): void
+    public function testStructure(): array
     {
-        $bodyParameters = $this->getBodyParameters([]);
+        $bodyParameters = $this->getBodyParameters($this->getRoute());
 
-        $this->assertArrayHasKey('in', $bodyParameters);
-        $this->assertArrayHasKey('name', $bodyParameters);
-        $this->assertArrayHasKey('schema', $bodyParameters);
-        $this->assertArrayHasKey('type', $bodyParameters['schema']);
-        $this->assertSame('object', $bodyParameters['schema']['type']);
-    }
-
-    public function testRequiredParameters(): array
-    {
-        $bodyParameters = $this->getBodyParameters([
-            'id' => 'integer|required',
-            'email' => 'email|required',
-            'address' => 'string|required',
-            'dob' => 'date|required',
-            'picture' => 'file',
-            'is_validated' => 'boolean',
-            'score' => 'numeric',
-        ]);
-
-        $this->assertEquals([
-            'id',
-            'email',
-            'address',
-            'dob',
-        ], $bodyParameters['schema']['required']);
+        self::assertContainsAssocArray(['in' => 'body'], $bodyParameters);
+        self::assertContainsAssocArray(['name' => 'body'], $bodyParameters);
+        self::assertContainsAssocArray(['summary' => 'Get all body parameters.'], $bodyParameters);
+        self::assertContainsAssocArray(['description' => 'Use this route to get all body parameters.'], $bodyParameters);
+        self::assertArrayHasKey('schema', $bodyParameters);
+        self::assertArrayHasKey('type', $bodyParameters['schema']);
+        self::assertSame('object', $bodyParameters['schema']['type']);
 
         return $bodyParameters;
     }
 
     /**
-     * @depends testRequiredParameters
+     * @depends testStructure
+     */
+    public function testRequiredParameters(array $bodyParameters): void
+    {
+        self::assertEquals(['id', 'email', 'address', 'dob'], $bodyParameters['schema']['required']);
+    }
+
+    /**
+     * @depends testStructure
      */
     public function testDataTypes(array $bodyParameters): void
     {
-        $this->assertEquals([
-            'id' => ['type' => 'integer'],
-            'email' => ['type' => 'string'],
-            'address' => ['type' => 'string'],
-            'dob' => ['type' => 'string'],
-            'picture' => ['type' => 'string'],
-            'is_validated' => ['type' => 'boolean'],
-            'score' => ['type' => 'number'],
-        ], $bodyParameters['schema']['properties']);
+        $properties = $bodyParameters['schema']['properties'];
+
+        self::assertContainsAssocArray(['id' => ['type' => 'integer', 'description' => 'User id']], $properties);
+        self::assertContainsAssocArray(['email' => ['type' => 'string', 'description' => 'User email']], $properties);
+        self::assertContainsAssocArray(['address' => ['type' => 'string', 'description' => 'User\'s home address']], $properties);
+        self::assertContainsAssocArray(['dob' => ['type' => 'string', 'description' => 'User\'s date of birth']], $properties);
+        self::assertContainsAssocArray(['picture' => ['type' => 'string', 'description' => 'Picture']], $properties);
+        self::assertContainsAssocArray(['is_validated' => ['type' => 'boolean', 'description' => 'Is Validated']], $properties);
+        self::assertContainsAssocArray(['score' => ['type' => 'number', 'description' => 'Score']], $properties);
     }
 
-    public function testNoRequiredParameters(): void
+    /**
+     * @depends testStructure
+     */
+    public function testEnumInBody(array $bodyParameters): void
     {
-        $bodyParameters = $this->getBodyParameters([]);
-
-        $this->assertArrayNotHasKey('required', $bodyParameters['schema']);
-    }
-
-    public function testEnumInBody(): void
-    {
-        $bodyParameters = $this->getBodyParameters([
-            'account_type' => 'integer|in:1,2|in_array:foo',
-        ]);
-
-        $this->assertEquals([
+        self::assertContainsAssocArray([
             'account_type' => [
                 'type' => 'integer',
                 'enum' => [1, 2],
+                'description' => 'Account Type',
             ],
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testArraySyntax(): void
+    /**
+     * @depends testStructure
+     */
+    public function testArraySyntax(array $bodyParameters): void
     {
-        $bodyParameters = $this->getBodyParameters([
-            'matrix' => 'array',
-            'matrix.*' => 'array',
-            'matrix.*.*' => 'integer',
-        ]);
-
-        $this->assertEquals([
+        self::assertContainsAssocArray([
             'matrix' => [
                 'type' => 'array',
                 'items' => [
@@ -100,19 +82,17 @@ final class BodyParameterGeneratorTest extends TestCase
                         ],
                     ],
                 ],
+                'description' => 'Matrix',
             ],
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testObjectInArraySyntax(): void
+    /**
+     * @depends testStructure
+     */
+    public function testObjectInArraySyntax(array $bodyParameters): void
     {
-        $bodyParameters = $this->getBodyParameters([
-            'points' => 'array',
-            'points.*.x' => 'numeric',
-            'points.*.y' => 'numeric',
-        ]);
-
-        $this->assertEquals([
+        self::assertContainsAssocArray([
             'points' => [
                 'type' => 'array',
                 'items' => [
@@ -121,97 +101,96 @@ final class BodyParameterGeneratorTest extends TestCase
                         'properties' => [
                             'x' => [
                                 'type' => 'number',
+                                'description' => 'X',
                             ],
                             'y' => [
                                 'type' => 'number',
+                                'description' => 'Y',
                             ],
                         ],
                     ],
                 ],
+                'description' => 'Points',
             ],
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testSingleObjectSyntax(): void
+    /**
+     * @depends testStructure
+     */
+    public function testSingleObjectSyntax(array $bodyParameters): void
     {
-        $bodyParameters = $this->getBodyParameters([
-            'point' => '',
-            'point.x' => 'numeric',
-            'point.y' => 'numeric',
-        ]);
-
-        $this->assertEquals([
+        self::assertContainsAssocArray([
             'point' => [
                 'type' => 'object',
                 'properties' => [
                     'x' => [
                         'type' => 'number',
+                        'description' => 'X',
                     ],
                     'y' => [
                         'type' => 'number',
+                        'description' => 'Y',
                     ],
                 ],
+                'description' => 'Point',
             ],
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testResolvesRuleEnum(): void
+    /**
+     * @depends testStructure
+     */
+    public function testResolvesRuleEnum(array $bodyParameters): void
     {
-        $bodyParameters = $this->getBodyParameters([
-            'type' => [
-                Rule::in(1, 2, 3),
-                'integer',
-            ],
-        ]);
-
-        $this->assertEquals([
+        self::assertContainsAssocArray([
             'type' => [
                 'type' => 'integer',
                 'enum' => ['"1"', '"2"', '"3"'], //using Rule::in parameters are cast to string
+                'description' => 'Type',
             ],
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testIgnoresRuleObject(): void
+    /**
+     * @depends testStructure
+     */
+    public function testIgnoresRuleObject(array $bodyParameters): void
     {
-        $bodyParameters = $this->getBodyParameters([
-            'name' => [
-                'string',
-                new UppercaseRule,
-            ],
-        ]);
-
-        $this->assertEquals([
+        self::assertContainsAssocArray([
             'name' => [
                 'type' => 'string',
+                'description' => 'Name',
             ],
         ], $bodyParameters['schema']['properties']);
     }
 
-    public function testIgnoresClosureRules(): void
+    /**
+     * @depends testStructure
+     */
+    public function testIgnoresClosureRules(array $bodyParameters): void
     {
-        $bodyParameters = $this->getBodyParameters([
-            'name' => [
-                'string',
-                function ($attribute, $value, $fail) {
-                    if ($value === 'foo') {
-                        $fail($attribute.' is invalid.');
-                    }
-                },
-            ],
-        ]);
-
-        $this->assertEquals([
-            'name' => [
+        self::assertContainsAssocArray([
+            'name_too' => [
                 'type' => 'string',
+                'description' => 'Name Too',
             ],
         ], $bodyParameters['schema']['properties']);
     }
 
-    private function getBodyParameters(array $rules): array
+    private function getRoute(callable $action = null): LaravelRoute
     {
-        $bodyParameters = (new BodyParameterGenerator())->getParametersFromRules($rules);
+        $action ??= #[Request(BodyParameterRequest::class)] static fn() => '';
 
-        return current($bodyParameters);
+        return new LaravelRoute(
+            'POST',
+            '/',
+            $action
+        );
+    }
+
+    private function getBodyParameters(LaravelRoute $route): array
+    {
+        return (new BodyParameterGenerator())->getParameters(new Route($route));
     }
 }

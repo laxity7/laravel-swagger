@@ -2,50 +2,55 @@
 
 namespace Mtrajano\LaravelSwagger\Parsers\Requests\Generators;
 
-use Mtrajano\LaravelSwagger\DataObjects\Route;
 use Mtrajano\LaravelSwagger\Enums\Method;
 use Mtrajano\LaravelSwagger\Parsers\Requests\RulesParamHelper;
+use Mtrajano\LaravelSwagger\Parsers\Route;
 
 final class BodyParameterGenerator implements ParameterGenerator
 {
-    public function getParametersFromRules(array $rules): array
+    private function getParametersFromRules(Route $route): array
     {
+        $rules = $route->request?->getRules() ?? [];
+
         $required = [];
         $properties = [];
         foreach ($rules as $param => $rule) {
             $paramRules = RulesParamHelper::splitRules($rule);
             $nameTokens = explode('.', $param);
-
-            $properties = $this->addToProperties($nameTokens, $paramRules, $properties);
+            $properties = $this->addToProperties($route, $nameTokens, $paramRules, $properties);
 
             if (RulesParamHelper::isParamRequired($paramRules)) {
                 $required[] = $param;
             }
         }
 
-        $params = [
-            'in' => 'body',
-            'name' => 'body',
-            'description' => '',
-            'schema' => [
-                'type' => 'object',
-                'properties' => $properties
-            ],
-        ];
-
-        if (!empty($required)) {
-            $params['schema']['required'] = $required;
-        }
-
-        return [$params];
+        return [$properties, $required];
     }
 
     public function getParameters(Route $route): array
     {
-        return $this->getParametersFromRules(RulesParamHelper::getFormRules($route));
+        [$properties, $required] = $this->getParametersFromRules($route);
+
+        $params = [
+            'in' => 'body',
+            'name' => 'body',
+            'summary' => $route->request?->getSummary() ?? '',
+            'description' => $route->request?->getDescription() ?? '',
+            'schema' => [
+                'type' => 'object',
+                'properties' => $properties,
+                'required' => $required,
+            ],
+        ];
+
+        if (empty($required)) {
+            unset($params['schema']['required']);
+        }
+
+        return $params;
     }
 
-    private function addToProperties(array $nameTokens, array $rules, array $properties = []): array
+    private function addToProperties(Route $route, array $nameTokens, array $rules, array $properties = []): array
     {
         if (empty($nameTokens)) {
             return [];
@@ -64,15 +69,17 @@ final class BodyParameterGenerator implements ParameterGenerator
 
         if (!isset($properties[$name])) {
             $properties[$name] = $this->getNewPropObj($type, $rules);
+            if ($name !== 0) {
+                $properties[$name]['description'] = $route->request->getFieldDescription($name);
+            }
         } else {
-            //overwrite previous type in case it wasn't given before
             $properties[$name]['type'] = $type;
         }
 
         if ($type === 'array') {
-            $properties[$name]['items'] = $this->addToProperties($nameTokens, $rules, $properties[$name]['items'] ?? []);
+            $properties[$name]['items'] = $this->addToProperties($route, $nameTokens, $rules, $properties[$name]['items'] ?? []);
         } elseif ($type === 'object') {
-            $properties[$name]['properties'] = $this->addToProperties($nameTokens, $rules, $properties[$name]['properties'] ?? []);
+            $properties[$name]['properties'] = $this->addToProperties($route, $nameTokens, $rules, $properties[$name]['properties'] ?? []);
         }
 
         return $properties;
@@ -93,7 +100,8 @@ final class BodyParameterGenerator implements ParameterGenerator
             'type' => $type,
         ];
 
-        if ($enums = RulesParamHelper::getEnumValues($rules)) {
+        $enums = RulesParamHelper::getEnumValues($rules);
+        if ($enums) {
             $propObj['enum'] = $enums;
         }
 

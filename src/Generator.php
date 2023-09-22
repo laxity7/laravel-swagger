@@ -2,14 +2,15 @@
 
 namespace Mtrajano\LaravelSwagger;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Routing\Route as LaravelRoute;
 use Laravel\Passport\Passport;
-use Mtrajano\LaravelSwagger\DataObjects\Route;
 use Mtrajano\LaravelSwagger\Enums\Method;
 use Mtrajano\LaravelSwagger\Parsers\MethodParser;
 use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\ParameterGenerator;
 use Mtrajano\LaravelSwagger\Parsers\Requests\RequestParser;
 use Mtrajano\LaravelSwagger\Parsers\ResponseParser;
+use Mtrajano\LaravelSwagger\Parsers\Route;
 
 final class Generator implements GeneratorContract
 {
@@ -37,11 +38,10 @@ final class Generator implements GeneratorContract
          *     produces: string[],
          *     ignoredMethods: string[],
          *     routeFilter: string|null,
-         *     parseDocBlock: bool,
          *     parseSecurity: bool,
          *     authFlow: string,
          *     generatorClass: string,
-         *     requestsGenerators: string[]|ParameterGenerator[],
+         *     requestsGenerators: list<class-string<ParameterGenerator>>,
          * }
          */
         private readonly array $config
@@ -56,8 +56,18 @@ final class Generator implements GeneratorContract
         return $this;
     }
 
+    private function disableValidation(): void
+    {
+        (function () {
+            /** @var Application $this */
+            unset($this->afterResolvingCallbacks['Illuminate\Contracts\Validation\ValidatesWhenResolved']);
+        })->call(app());
+    }
+
     public function generate(): array
     {
+        $this->disableValidation();
+
         $docs = $this->getBaseInfo();
 
         if ($this->config['parseSecurity'] && $this->hasOauthRoutes()) {
@@ -68,7 +78,7 @@ final class Generator implements GeneratorContract
         $ignoredMethods = Method::fromArray($this->config['ignoredMethods']);
         $paths = [];
         foreach ($this->getAppRoutes() as $route) {
-            if ($this->isFilteredRoute($route)) {
+            if ($this->needSkipRoute($route)) {
                 continue;
             }
             $paths[$route->uri()] ??= [];
@@ -131,7 +141,7 @@ final class Generator implements GeneratorContract
     private function getAppRoutes(): array
     {
         return array_map(
-            fn(LaravelRoute $route) => new Route($route, $this->config['parseDocBlock']),
+            fn(LaravelRoute $route) => new Route($route),
             app('router')->getRoutes()->getRoutes()
         );
     }
@@ -163,7 +173,7 @@ final class Generator implements GeneratorContract
     }
 
 
-    private function isFilteredRoute(Route $route): bool
+    private function needSkipRoute(Route $route): bool
     {
         return $this->routeFilter && !preg_match('/^'.preg_quote($this->routeFilter, '/').'/', $route->uri());
     }

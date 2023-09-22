@@ -2,7 +2,6 @@
 
 namespace Mtrajano\LaravelSwagger\Parsers;
 
-use Mtrajano\LaravelSwagger\DataObjects\Route;
 use Mtrajano\LaravelSwagger\Enums\Method;
 
 final class ResponseParser

@@ -2,6 +2,7 @@
 
 namespace Mtrajano\LaravelSwagger\Tests;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Routing\Router;
 use Laravel\Passport\Http\Middleware\CheckForAnyScope;
 use Laravel\Passport\Http\Middleware\CheckScopes;
@@ -15,6 +16,21 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->disableValidation();
+    }
+
+    private function disableValidation(): void
+    {
+        (function () {
+            /** @var Application $this */
+            unset($this->afterResolvingCallbacks['Illuminate\Contracts\Validation\ValidatesWhenResolved']);
+        })->call(app());
+    }
+
     final protected function getPackageProviders($app): array
     {
         return [
@@ -47,5 +63,16 @@ class TestCase extends OrchestraTestCase
             'user-read' => 'Read user information such as email, name and phone number',
             'user-write' => 'Update user information',
         ]);
+    }
+
+    final public static function assertContainsAssocArray(
+        array $needle,
+        array $haystack,
+        string $message = 'Failed asserting that array contains the specified array.'
+    ): void {
+        foreach ($needle as $key => $value) {
+            static::assertArrayHasKey($key, $haystack, $message);
+            static::assertEquals($value, $haystack[$key], $message);
+        }
     }
 }

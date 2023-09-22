@@ -60,21 +60,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Parse summary and descriptions
-    |--------------------------------------------------------------------------
-    |
-    | If true will parse the action method docBlock and make it's best guess
-    | for what is the summary and description. Usually the first line will be
-    | used as the route's summary and any paragraphs below (other than
-    | annotations) will be used as the description. It will also parse any
-    | appropriate annotations, such as @deprecated.
-    |
-    */
-
-    'parseDocBlock' => true,
-
-    /*
-    |--------------------------------------------------------------------------
     | Security
     |--------------------------------------------------------------------------
     |

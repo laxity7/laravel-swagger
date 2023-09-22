@@ -2,8 +2,8 @@
 
 namespace Mtrajano\LaravelSwagger\Parsers\Requests\Generators;
 
-use Mtrajano\LaravelSwagger\DataObjects\Route;
 use Mtrajano\LaravelSwagger\Enums\Method;
+use Mtrajano\LaravelSwagger\Parsers\Route;
 
 interface ParameterGenerator
 {

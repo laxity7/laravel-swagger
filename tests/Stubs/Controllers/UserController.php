@@ -16,12 +16,12 @@ final class UserController extends Controller
     }
 
     /**
-     * @param  UserShowRequest  $request
      * @param  int  $id  User id
+     * @param  UserShowRequest  $request
      * @param $uuid
      * @return string
      */
-    public function show(UserShowRequest $request, int $id, $uuid): string
+    public function show(int $id, UserShowRequest $request, $uuid): string
     {
         return json_encode(['first_name' => 'John']);
     }
