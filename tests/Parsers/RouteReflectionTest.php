@@ -1,12 +1,12 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Parsers;
+namespace Laxity7\LaravelSwagger\Tests\Parsers;
 
 use Illuminate\Routing\Route as LaravelRoute;
-use Mtrajano\LaravelSwagger\Parsers\Route;
-use Mtrajano\LaravelSwagger\Parsers\RouteReflection;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Controllers\UserController;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\UserShowRequest;
+use Laxity7\LaravelSwagger\Parsers\Route;
+use Laxity7\LaravelSwagger\Parsers\RouteReflection;
+use Laxity7\LaravelSwagger\Tests\Stubs\Controllers\UserController;
+use Laxity7\LaravelSwagger\Tests\Stubs\Requests\UserShowRequest;
 use PHPUnit\Framework\TestCase;
 
 final class RouteReflectionTest extends TestCase

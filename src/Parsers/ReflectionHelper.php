@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers;
+namespace Laxity7\LaravelSwagger\Parsers;
 
 use Illuminate\Routing\RouteAction;
 use Illuminate\Support\Reflector as IlluminateReflector;

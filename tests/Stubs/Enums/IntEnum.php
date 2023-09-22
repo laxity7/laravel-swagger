@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Stubs\Enums;
+namespace Laxity7\LaravelSwagger\Tests\Stubs\Enums;
 
 enum IntEnum: int
 {

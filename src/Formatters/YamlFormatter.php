@@ -1,8 +1,8 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Formatters;
+namespace Laxity7\LaravelSwagger\Formatters;
 
-use Mtrajano\LaravelSwagger\LaravelSwaggerException;
+use Laxity7\LaravelSwagger\LaravelSwaggerException;
 
 class YamlFormatter extends Formatter
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers;
+namespace Laxity7\LaravelSwagger\Parsers;
 
 use Illuminate\Routing\Route as LaravelRoute;
 use Illuminate\Support\Arr;
-use Mtrajano\LaravelSwagger\DataObjects\Middleware;
-use Mtrajano\LaravelSwagger\Enums\Method;
-use Mtrajano\LaravelSwagger\Parsers\Requests\RouteRequest;
+use Laxity7\LaravelSwagger\DataObjects\Middleware;
+use Laxity7\LaravelSwagger\Enums\Method;
+use Laxity7\LaravelSwagger\Parsers\Requests\RouteRequest;
 use phpDocumentor\Reflection\DocBlock;
 use ReflectionParameter;
 

@@ -1,8 +1,8 @@
 <?php
 
-use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
-use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\PathParameterGenerator;
-use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Requests\Generators\PathParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator;
 
 return [
 
@@ -87,7 +87,7 @@ return [
     |
     */
 
-    'generatorClass' => Mtrajano\LaravelSwagger\Generator::class,
+    'generatorClass' => Laxity7\LaravelSwagger\Generator::class,
 
     'requestsGenerators' => [
         PathParameterGenerator::class,

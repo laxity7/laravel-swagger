@@ -1,10 +1,10 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Parsers\Requests\Parameters;
+namespace Laxity7\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
 use Illuminate\Validation\Rule;
-use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator;
-use Mtrajano\LaravelSwagger\Tests\TestCase;
+use Laxity7\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator;
+use Laxity7\LaravelSwagger\Tests\TestCase;
 
 final class QueryParameterGeneratorTest extends TestCase
 {

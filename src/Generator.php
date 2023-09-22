@@ -1,16 +1,16 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger;
+namespace Laxity7\LaravelSwagger;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Routing\Route as LaravelRoute;
 use Laravel\Passport\Passport;
-use Mtrajano\LaravelSwagger\Enums\Method;
-use Mtrajano\LaravelSwagger\Parsers\MethodParser;
-use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\ParameterGenerator;
-use Mtrajano\LaravelSwagger\Parsers\Requests\RequestParser;
-use Mtrajano\LaravelSwagger\Parsers\ResponseParser;
-use Mtrajano\LaravelSwagger\Parsers\Route;
+use Laxity7\LaravelSwagger\Enums\Method;
+use Laxity7\LaravelSwagger\Parsers\MethodParser;
+use Laxity7\LaravelSwagger\Parsers\Requests\Generators\ParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Requests\RequestParser;
+use Laxity7\LaravelSwagger\Parsers\ResponseParser;
+use Laxity7\LaravelSwagger\Parsers\Route;
 
 final class Generator implements GeneratorContract
 {

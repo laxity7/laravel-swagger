@@ -1,11 +1,11 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Stubs\Controllers;
+namespace Laxity7\LaravelSwagger\Tests\Stubs\Controllers;
 
 use Illuminate\Routing\Controller;
-use Mtrajano\LaravelSwagger\Attributes\Request;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\UserShowRequest;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\UserStoreRequest;
+use Laxity7\LaravelSwagger\Attributes\Request;
+use Laxity7\LaravelSwagger\Tests\Stubs\Requests\UserShowRequest;
+use Laxity7\LaravelSwagger\Tests\Stubs\Requests\UserStoreRequest;
 
 final class UserController extends Controller
 {

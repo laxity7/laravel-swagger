@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Stubs\Requests;
+namespace Laxity7\LaravelSwagger\Tests\Stubs\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

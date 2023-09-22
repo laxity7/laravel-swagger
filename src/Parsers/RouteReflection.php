@@ -1,10 +1,10 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers;
+namespace Laxity7\LaravelSwagger\Parsers;
 
 use Illuminate\Http\Request as LaravelRequest;
-use Mtrajano\LaravelSwagger\Attributes\Request;
-use Mtrajano\LaravelSwagger\Generator;
+use Laxity7\LaravelSwagger\Attributes\Request;
+use Laxity7\LaravelSwagger\Generator;
 use phpDocumentor\Reflection\DocBlock;
 use ReflectionClass;
 use ReflectionFunction;

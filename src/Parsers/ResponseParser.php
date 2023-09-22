@@ -1,8 +1,8 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers;
+namespace Laxity7\LaravelSwagger\Parsers;
 
-use Mtrajano\LaravelSwagger\Enums\Method;
+use Laxity7\LaravelSwagger\Enums\Method;
 
 final class ResponseParser
 {

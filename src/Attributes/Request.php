@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Attributes;
+namespace Laxity7\LaravelSwagger\Attributes;
 
 use Attribute;
 use Illuminate\Http\Request as LaravelRequest;

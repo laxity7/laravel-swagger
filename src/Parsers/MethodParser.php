@@ -1,14 +1,14 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers;
+namespace Laxity7\LaravelSwagger\Parsers;
 
 use Exception;
 use Laravel\Passport\Http\Middleware\CheckForAnyScope;
 use Laravel\Passport\Http\Middleware\CheckScopes;
-use Mtrajano\LaravelSwagger\DataObjects;
-use Mtrajano\LaravelSwagger\DataObjects\Path;
-use Mtrajano\LaravelSwagger\Generator;
-use Mtrajano\LaravelSwagger\Parsers\Requests\RequestParser;
+use Laxity7\LaravelSwagger\DataObjects;
+use Laxity7\LaravelSwagger\DataObjects\Path;
+use Laxity7\LaravelSwagger\Generator;
+use Laxity7\LaravelSwagger\Parsers\Requests\RequestParser;
 
 final class MethodParser
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Parsers\Requests\Parameters;
+namespace Laxity7\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
 use Illuminate\Routing\Route as LaravelRoute;
-use Mtrajano\LaravelSwagger\Attributes\Request;
-use Mtrajano\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
-use Mtrajano\LaravelSwagger\Parsers\Route;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\BodyParameterRequest;
-use Mtrajano\LaravelSwagger\Tests\TestCase;
+use Laxity7\LaravelSwagger\Attributes\Request;
+use Laxity7\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Route;
+use Laxity7\LaravelSwagger\Tests\Stubs\Requests\BodyParameterRequest;
+use Laxity7\LaravelSwagger\Tests\TestCase;
 
 final class BodyParameterGeneratorTest extends TestCase
 {

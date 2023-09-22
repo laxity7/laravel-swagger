@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Enums;
+namespace Laxity7\LaravelSwagger\Enums;
 
 use InvalidArgumentException;
 

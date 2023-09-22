@@ -1,9 +1,9 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests;
+namespace Laxity7\LaravelSwagger\Tests;
 
-use Mtrajano\LaravelSwagger\Generator;
-use Mtrajano\LaravelSwagger\LaravelSwaggerException;
+use Laxity7\LaravelSwagger\Generator;
+use Laxity7\LaravelSwagger\LaravelSwaggerException;
 
 final class GeneratorTest extends TestCase
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Stubs\Requests;
+namespace Laxity7\LaravelSwagger\Tests\Stubs\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Rules\Uppercase as UppercaseRule;
+use Laxity7\LaravelSwagger\Tests\Stubs\Rules\Uppercase as UppercaseRule;
 
 /**
  * Get all body parameters.

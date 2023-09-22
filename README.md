@@ -18,7 +18,7 @@ The package can easily be installed by running `composer require laxity7/laravel
 
 This will register the artisan command that will be available to you.
 
-You can also override the default config provided by the application by running `php artisan vendor:publish --provider "Mtrajano\LaravelSwagger\SwaggerServiceProvider"` in your projects root and change the configuration in the new `config/laravel-swagger.php` file created.
+You can also override the default config provided by the application by running `php artisan vendor:publish --provider "Laxity7\LaravelSwagger\SwaggerServiceProvider"` in your projects root and change the configuration in the new `config/laravel-swagger.php` file created.
 
 ## Usage
 

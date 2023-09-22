@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Stubs\Rules;
+namespace Laxity7\LaravelSwagger\Tests\Stubs\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;

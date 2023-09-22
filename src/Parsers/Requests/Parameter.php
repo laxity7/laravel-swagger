@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers\Requests;
+namespace Laxity7\LaravelSwagger\Parsers\Requests;
 
 class Parameter
 {

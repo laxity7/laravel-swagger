@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\DataObjects;
+namespace Laxity7\LaravelSwagger\DataObjects;
 
 final class Middleware
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers\Requests\Generators;
+namespace Laxity7\LaravelSwagger\Parsers\Requests\Generators;
 
 use Illuminate\Support\Str;
-use Mtrajano\LaravelSwagger\Enums\Method;
-use Mtrajano\LaravelSwagger\Parsers\Requests\EnumExtractor;
-use Mtrajano\LaravelSwagger\Parsers\Route;
+use Laxity7\LaravelSwagger\Enums\Method;
+use Laxity7\LaravelSwagger\Parsers\Requests\EnumExtractor;
+use Laxity7\LaravelSwagger\Parsers\Route;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use UnitEnum;
 

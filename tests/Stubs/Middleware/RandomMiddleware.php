@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Stubs\Middleware;
+namespace Laxity7\LaravelSwagger\Tests\Stubs\Middleware;
 
 use Illuminate\Http\Request;
 

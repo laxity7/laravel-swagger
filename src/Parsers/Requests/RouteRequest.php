@@ -1,10 +1,10 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers\Requests;
+namespace Laxity7\LaravelSwagger\Parsers\Requests;
 
 use Illuminate\Http\Request as LaravelRequest;
 use Illuminate\Support\Str;
-use Mtrajano\LaravelSwagger\Parsers\ReflectionHelper;
+use Laxity7\LaravelSwagger\Parsers\ReflectionHelper;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tags\Property;
 use ReflectionClass;

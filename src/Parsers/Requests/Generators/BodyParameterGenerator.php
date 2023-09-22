@@ -1,10 +1,10 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parsers\Requests\Generators;
+namespace Laxity7\LaravelSwagger\Parsers\Requests\Generators;
 
-use Mtrajano\LaravelSwagger\Enums\Method;
-use Mtrajano\LaravelSwagger\Parsers\Requests\RulesParamHelper;
-use Mtrajano\LaravelSwagger\Parsers\Route;
+use Laxity7\LaravelSwagger\Enums\Method;
+use Laxity7\LaravelSwagger\Parsers\Requests\RulesParamHelper;
+use Laxity7\LaravelSwagger\Parsers\Route;
 
 final class BodyParameterGenerator implements ParameterGenerator
 {

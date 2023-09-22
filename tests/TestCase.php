@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests;
+namespace Laxity7\LaravelSwagger\Tests;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Routing\Router;
@@ -8,10 +8,10 @@ use Laravel\Passport\Http\Middleware\CheckForAnyScope;
 use Laravel\Passport\Http\Middleware\CheckScopes;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
-use Mtrajano\LaravelSwagger\SwaggerServiceProvider;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Controllers\ApiController;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Controllers\UserController;
-use Mtrajano\LaravelSwagger\Tests\Stubs\Middleware\RandomMiddleware;
+use Laxity7\LaravelSwagger\SwaggerServiceProvider;
+use Laxity7\LaravelSwagger\Tests\Stubs\Controllers\ApiController;
+use Laxity7\LaravelSwagger\Tests\Stubs\Controllers\UserController;
+use Laxity7\LaravelSwagger\Tests\Stubs\Middleware\RandomMiddleware;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Stubs\Controllers;
+namespace Laxity7\LaravelSwagger\Tests\Stubs\Controllers;
 
 use Illuminate\Routing\Controller;
 
