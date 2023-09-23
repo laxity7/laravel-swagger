@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Mtrajano\\LaravelSwagger\\": "src/"
+            "Laxity7\\LaravelSwagger\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Mtrajano\\LaravelSwagger\\Tests\\": "tests/"
+            "Laxity7\\LaravelSwagger\\Tests\\": "tests/"
         }
     },
     "suggest": {
@@ -39,7 +39,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Mtrajano\\LaravelSwagger\\SwaggerServiceProvider"
+                "Laxity7\\LaravelSwagger\\SwaggerServiceProvider"
             ]
         }
     },
