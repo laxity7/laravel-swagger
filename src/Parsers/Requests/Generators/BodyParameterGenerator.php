@@ -47,7 +47,7 @@ final class BodyParameterGenerator implements ParameterGenerator
             unset($params['schema']['required']);
         }
 
-        return $params;
+        return [$params];
     }
 
     private function addToProperties(Route $route, array $nameTokens, array $rules, array $properties = []): array

@@ -191,6 +191,6 @@ final class BodyParameterGeneratorTest extends TestCase
 
     private function getBodyParameters(LaravelRoute $route): array
     {
-        return (new BodyParameterGenerator())->getParameters(new Route($route));
+        return (new BodyParameterGenerator())->getParameters(new Route($route))[0];
     }
 }
