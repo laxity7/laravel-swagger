@@ -2,41 +2,37 @@
 
 namespace Laxity7\LaravelSwagger;
 
-class FormatterManager
+use Laxity7\LaravelSwagger\Formatters\Formatter;
+
+final class FormatterManager
 {
-    private $docs;
+    private Formatter $formatter;
 
-    private $formatter;
-
-    public function __construct($docs)
+    public function __construct(private array $docs)
     {
-        $this->docs = $docs;
-
-        $this->formatter = new Formatters\JsonFormatter($docs);
+        $this->formatter = $this->getFormatter('json');
     }
 
-    public function setFormat($format)
+    public function setFormat(string $format): self
     {
-        $format = strtolower($format);
-
         $this->formatter = $this->getFormatter($format);
 
         return $this;
     }
 
-    protected function getFormatter($format)
+    /**
+     * @throws LaravelSwaggerException
+     */
+    private function getFormatter(string $format): Formatter
     {
-        switch ($format) {
-            case 'json':
-                return new Formatters\JsonFormatter($this->docs);
-            case 'yaml':
-                return new Formatters\YamlFormatter($this->docs);
-            default:
-                throw new LaravelSwaggerException('Invalid format passed');
-        }
+        return match (strtolower($format)) {
+            'json' => new Formatters\JsonFormatter($this->docs),
+            'yaml' => new Formatters\YamlFormatter($this->docs),
+            default => throw new LaravelSwaggerException('Invalid format passed'),
+        };
     }
 
-    public function format()
+    public function format(): string
     {
         return $this->formatter->format();
     }

@@ -4,12 +4,9 @@ namespace Laxity7\LaravelSwagger\Formatters;
 
 abstract class Formatter
 {
-    protected $docs;
-
-    public function __construct($docs)
+    public function __construct(protected array $docs)
     {
-        $this->docs = $docs;
     }
 
-    abstract public function format();
+    abstract public function format(): string;
 }
