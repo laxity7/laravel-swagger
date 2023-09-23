@@ -70,7 +70,7 @@ class UserShowRequest extends FormRequest
 
 ```
 
-Running `php artisan laravel-swagger:generate > swagger.json` will generate the following file:
+Running `php artisan swagger:generate > swagger.json` will generate the following file:
 ```json
 {
     "swagger": "2.0",
