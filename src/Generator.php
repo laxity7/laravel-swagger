@@ -49,7 +49,7 @@ final class Generator implements GeneratorContract
         $this->routeFilter = $config['routeFilter'] ?? null;
     }
 
-    public function setRouteFilter(string $routeFilter): self
+    public function setRouteFilter(?string $routeFilter): self
     {
         $this->routeFilter = $routeFilter;
 

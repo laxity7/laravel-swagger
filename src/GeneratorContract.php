@@ -6,5 +6,5 @@ interface GeneratorContract
 {
     public function generate(): array;
 
-    public function setRouteFilter(string $routeFilter): self;
+    public function setRouteFilter(?string $routeFilter): self;
 }
