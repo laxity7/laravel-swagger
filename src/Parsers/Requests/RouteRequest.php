@@ -4,9 +4,8 @@ namespace Laxity7\LaravelSwagger\Parsers\Requests;
 
 use Illuminate\Http\Request as LaravelRequest;
 use Illuminate\Support\Str;
+use Laxity7\LaravelSwagger\Parsers\DocBlock;
 use Laxity7\LaravelSwagger\Parsers\ReflectionHelper;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Tags\Property;
 use ReflectionClass;
 
 final class RouteRequest
@@ -52,24 +51,11 @@ final class RouteRequest
     public function getFieldDescription(string $field): string
     {
         $default = Str::headline($field);
-        $properties = $this->getClassDocBlock()?->getTagsByName('property') ?? [];
-        /** @var Property $property */
-        foreach ($properties as $property) {
-            if ($property->getVariableName() === $field) {
-                return $property->getDescription()?->render() ?? '';
-            }
-        }
 
-        if (!$this->reflection->hasProperty($field)) {
-            return $default;
-        }
-
-        $property = $this->reflection->getProperty($field);
-        $docBlock = ReflectionHelper::parseDocBlock($property);
-        if ($docBlock->getSummary()) {
-            return $docBlock->getSummary();
-        }
-
-        return $docBlock->getTagsByName('var')[0]?->getDescription()->render() ?? $default;
+        return ReflectionHelper::getPropertyDescription(
+            $this->reflection,
+            $field,
+            $this->getClassDocBlock()->getTagDescriptionForVariable('property', $field, $default)
+        );
     }
 }

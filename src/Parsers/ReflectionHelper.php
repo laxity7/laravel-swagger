@@ -7,7 +7,6 @@ use Illuminate\Support\Reflector as IlluminateReflector;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
 use Laravel\SerializableClosure\UnsignedSerializableClosure;
-use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use ReflectionFunction;
@@ -81,7 +80,7 @@ final class ReflectionHelper
 
     public static function parseDocBlockFromString(string $docComment): DocBlock
     {
-        return self::getDocBlockParser()->create($docComment ?: '/** */');
+        return new DocBlock(self::getDocBlockParser()->create($docComment ?: '/** */'));
     }
 
     private static function getReflectionMethod(array $action): ReflectionFunction|ReflectionMethod|null
@@ -139,5 +138,20 @@ final class ReflectionHelper
     private static function isBaseType(string $type): bool
     {
         return in_array($type, ['string', 'int', 'float', 'bool', 'array'], true);
+    }
+
+    public static function getPropertyDescription(ReflectionClass $reflectionClass, string $propertyName, string $default = ''): ?string
+    {
+        if (!$reflectionClass->hasProperty($propertyName)) {
+            return $default;
+        }
+
+        $property = $reflectionClass->getProperty($propertyName);
+        $docBlock = self::parseDocBlock($property);
+        if ($docBlock->getSummary()) {
+            return $docBlock->getSummary();
+        }
+
+        return $docBlock->getTagDescription('var', $default);
     }
 }

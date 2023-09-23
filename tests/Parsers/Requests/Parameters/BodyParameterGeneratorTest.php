@@ -45,8 +45,8 @@ final class BodyParameterGeneratorTest extends TestCase
         self::assertContainsAssocArray(['email' => ['type' => 'string', 'description' => 'User email']], $properties);
         self::assertContainsAssocArray(['address' => ['type' => 'string', 'description' => 'User\'s home address']], $properties);
         self::assertContainsAssocArray(['dob' => ['type' => 'string', 'description' => 'User\'s date of birth']], $properties);
-        self::assertContainsAssocArray(['picture' => ['type' => 'string', 'description' => 'Picture']], $properties);
-        self::assertContainsAssocArray(['is_validated' => ['type' => 'boolean', 'description' => 'Is Validated']], $properties);
+        self::assertContainsAssocArray(['picture' => ['type' => 'string', 'description' => 'This is a picture']], $properties);
+        self::assertContainsAssocArray(['is_validated' => ['type' => 'boolean', 'description' => 'Is it validated data?']], $properties);
         self::assertContainsAssocArray(['score' => ['type' => 'number', 'description' => 'Score']], $properties);
     }
 

@@ -13,6 +13,7 @@ use Laxity7\LaravelSwagger\Tests\Stubs\Rules\Uppercase as UppercaseRule;
  *
  * @property string $address User's home address
  * @property string $dob User's date of birth
+ * @property $picture Ignored this description
  */
 final class BodyParameterRequest extends FormRequest
 {
@@ -20,6 +21,17 @@ final class BodyParameterRequest extends FormRequest
     public string $id;
     /** @var string User email */
     public $email;
+    /**
+     * Is it validated data?
+     *
+     * @var bool Ignored this description
+     */
+    public $is_validated;
+    public $score;
+    /**
+     * This is a picture
+     */
+    public $picture;
 
     public function rules(): array
     {

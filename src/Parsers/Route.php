@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use Laxity7\LaravelSwagger\DataObjects\Middleware;
 use Laxity7\LaravelSwagger\Enums\Method;
 use Laxity7\LaravelSwagger\Parsers\Requests\RouteRequest;
-use phpDocumentor\Reflection\DocBlock;
 use ReflectionParameter;
 
 final class Route

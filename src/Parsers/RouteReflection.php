@@ -5,7 +5,6 @@ namespace Laxity7\LaravelSwagger\Parsers;
 use Illuminate\Http\Request as LaravelRequest;
 use Laxity7\LaravelSwagger\Attributes\Request;
 use Laxity7\LaravelSwagger\Generator;
-use phpDocumentor\Reflection\DocBlock;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
