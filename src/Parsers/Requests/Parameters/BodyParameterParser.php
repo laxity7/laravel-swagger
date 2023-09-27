@@ -1,12 +1,12 @@
 <?php
 
-namespace Laxity7\LaravelSwagger\Parsers\Requests\Generators;
+namespace Laxity7\LaravelSwagger\Parsers\Requests\Parameters;
 
 use Laxity7\LaravelSwagger\Enums\Method;
 use Laxity7\LaravelSwagger\Parsers\Requests\RulesParamHelper;
 use Laxity7\LaravelSwagger\Parsers\Route;
 
-final class BodyParameterGenerator implements ParameterGenerator
+final class BodyParameterParser implements ParameterParser
 {
     private function getParametersFromRules(Route $route): array
     {

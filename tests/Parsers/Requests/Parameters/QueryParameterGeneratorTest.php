@@ -3,7 +3,7 @@
 namespace Laxity7\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
 use Illuminate\Validation\Rule;
-use Laxity7\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Requests\Parameters\QueryParameterParser;
 use Laxity7\LaravelSwagger\Tests\TestCase;
 
 final class QueryParameterGeneratorTest extends TestCase
@@ -108,6 +108,6 @@ final class QueryParameterGeneratorTest extends TestCase
 
     private function getQueryParameters(array $rules): array
     {
-        return (new QueryParameterGenerator())->getParametersFromRules($rules);
+        return (new QueryParameterParser())->getParametersFromRules($rules);
     }
 }

@@ -6,18 +6,14 @@ use Laxity7\LaravelSwagger\Formatters\Formatter;
 
 final class FormatterManager
 {
-    private Formatter $formatter;
+    public function __construct(
+        private array $docs,
+        /**
+         * @var list<string, Formatter>
+         */
+        private array $formatters
+    ) {
 
-    public function __construct(private array $docs, string $format = 'json')
-    {
-        $this->formatter = $this->getFormatter($format);
-    }
-
-    public function setFormat(string $format): self
-    {
-        $this->formatter = $this->getFormatter($format);
-
-        return $this;
     }
 
     /**
@@ -25,15 +21,13 @@ final class FormatterManager
      */
     private function getFormatter(string $format): Formatter
     {
-        return match (strtolower($format)) {
-            'json' => new Formatters\JsonFormatter($this->docs),
-            'yaml' => new Formatters\YamlFormatter($this->docs),
-            default => throw new LaravelSwaggerException('Invalid format passed'),
-        };
+        $formatter = $this->formatters[$format] ?? throw new LaravelSwaggerException('Invalid format passed');
+
+        return new $formatter();
     }
 
-    public function format(): string
+    public function format(string $format): string
     {
-        return $this->formatter->format();
+        return $this->getFormatter($format)->format($this->docs);
     }
 }

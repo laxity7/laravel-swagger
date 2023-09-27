@@ -1,6 +1,6 @@
 <?php
 
-namespace Laxity7\LaravelSwagger\Parsers\Requests\Generators;
+namespace Laxity7\LaravelSwagger\Parsers\Requests\Parameters;
 
 use Illuminate\Support\Str;
 use Laxity7\LaravelSwagger\Enums\Method;
@@ -9,7 +9,7 @@ use Laxity7\LaravelSwagger\Parsers\Route;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use UnitEnum;
 
-final class PathParameterGenerator implements ParameterGenerator
+final class PathParameterParser implements ParameterParser
 {
     private Route $route;
 

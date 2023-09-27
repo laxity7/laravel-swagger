@@ -7,7 +7,7 @@ use Illuminate\Routing\Route as LaravelRoute;
 use Laravel\Passport\Passport;
 use Laxity7\LaravelSwagger\Enums\Method;
 use Laxity7\LaravelSwagger\Parsers\MethodParser;
-use Laxity7\LaravelSwagger\Parsers\Requests\Generators\ParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Requests\Parameters\ParameterParser;
 use Laxity7\LaravelSwagger\Parsers\Requests\RequestParser;
 use Laxity7\LaravelSwagger\Parsers\ResponseParser;
 use Laxity7\LaravelSwagger\Parsers\Route;
@@ -40,7 +40,7 @@ final class Generator
          *     routeFilter: string|null,
          *     parseSecurity: bool,
          *     authFlow: string,
-         *     requestsGenerators: list<class-string<ParameterGenerator>>,
+         *     parameterParsers: list<class-string<ParameterParser>>,
          * }
          */
         private readonly array $config
@@ -89,7 +89,7 @@ final class Generator
 
                 $methodParser = new MethodParser(
                     route: $route,
-                    requestParser: new RequestParser($route, $method, $this->config['requestsGenerators']),
+                    requestParser: new RequestParser($route, $method, $this->config['parameterParsers']),
                     responseParser: new ResponseParser($route, $method),
                     hasSecurityDefinitions: $this->hasSecurityDefinitions,
                 );

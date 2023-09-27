@@ -4,7 +4,7 @@ namespace Laxity7\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
 use Illuminate\Routing\Route as LaravelRoute;
 use Laxity7\LaravelSwagger\Attributes\Request;
-use Laxity7\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Requests\Parameters\BodyParameterParser;
 use Laxity7\LaravelSwagger\Parsers\Route;
 use Laxity7\LaravelSwagger\Tests\Stubs\Requests\BodyParameterRequest;
 use Laxity7\LaravelSwagger\Tests\TestCase;
@@ -17,8 +17,7 @@ final class BodyParameterGeneratorTest extends TestCase
 
         self::assertContainsAssocArray(['in' => 'body'], $bodyParameters);
         self::assertContainsAssocArray(['name' => 'body'], $bodyParameters);
-        self::assertContainsAssocArray(['summary' => 'Get all body parameters.'], $bodyParameters);
-        self::assertContainsAssocArray(['description' => 'Use this route to get all body parameters.'], $bodyParameters);
+        self::assertContainsAssocArray(['description' => 'Get all body parameters.'], $bodyParameters);
         self::assertArrayHasKey('schema', $bodyParameters);
         self::assertArrayHasKey('type', $bodyParameters['schema']);
         self::assertSame('object', $bodyParameters['schema']['type']);
@@ -191,6 +190,6 @@ final class BodyParameterGeneratorTest extends TestCase
 
     private function getBodyParameters(LaravelRoute $route): array
     {
-        return (new BodyParameterGenerator())->getParameters(new Route($route))[0];
+        return (new BodyParameterParser())->getParameters(new Route($route))[0];
     }
 }

@@ -9,8 +9,6 @@ use Laxity7\LaravelSwagger\Tests\Stubs\Rules\Uppercase as UppercaseRule;
 /**
  * Get all body parameters.
  *
- * Use this route to get all body parameters.
- *
  * @property string $address User's home address
  * @property string $dob User's date of birth
  * @property $picture Ignored this description

@@ -37,14 +37,15 @@ for you.
 Generating the swagger documentation is easy, simply run `php artisan laravel-swagger:generate` in your project root.
 
 > Keep in mind the command will simply print out the output in your console. If you want the docs saved in a file, you can reroute the output like
-> so: `php artisan laravel-swagger:generate -o=swagger.json`
+> so: `php artisan laravel-swagger:generate -o swagger.json`
 
 If you wish to generate docs for a subset of your routes, you can pass a filter using `--filter`, for
 example: `php artisan laravel-swagger:generate --filter="/api"`
 
 By default, laravel-swagger prints out the documentation in json format, if you want it in YAML format, you can override the format using the `--format` (`-f`)
-flag. Make sure to have the yaml extension installed if you choose to do so.
-Format options are: `json` or `yaml`
+flag. Make sure to have the yaml extension or `symfony/yaml` package installed if you choose to do so.
+By default, format options are: `json` or `yaml`. You can add your own format by adding a new class that implements
+the `Laxity7\LaravelSwagger\Generators\FormatGenerator` interface and add it to the `'formats'` array in the `config/laravel-swagger.php` file.
 
 By default, prints out the documentation to the console, if you want it in a file, you can override the output using the `--output` (`-o`) flag.
 
@@ -59,27 +60,24 @@ $generator = new Generator();
 $generator->generate();
 ```
 
-### Custom request generators
+## Customization
 
-To add a custom request generator using the `config/laravel-swagger.php` file, you can follow these steps:
+## Custom request generators
 
-1. Open or create the `config/laravel-swagger.php` file.
-2. Locate the `'requestsGenerators'` array in the configuration file. This array contains the list of request generators that will be used by
-   the `Laxity7\LaravelSwagger\Generator` class.
-3. Create a new class that implements the `Laxity7\LaravelSwagger\Parsers\Requests\Generators\ParameterGenerator` interface. And add this class name to
-   the `'requestsGenerators'` array.
-   For example, let's say you have a custom request generator class called `App\Swagger\CustomBodyParameterGenerator`. You can add it to
-   the `'requestsGenerators'` array like this:
+You can add your own custom request generators to the package by adding a new class that implements
+the `Laxity7\LaravelSwagger\Parsers\Requests\Generators\ParameterParser` interface and add it to the `'parameterParsers'` array in
+the `config/laravel-swagger.php` file.
+
+For example, let's say you have a custom request generator class called `App\Swagger\CustomBodyParameterGenerator`.
+You can add it to the `'parameterParsers'` array like this:
 
 ```php
-'requestsGenerators' => [
-    \Laxity7\LaravelSwagger\Parsers\Requests\Generators\PathParameterGenerator::class,
-    \Laxity7\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator::class,
+'parameterParsers' => [
+    \Laxity7\LaravelSwagger\Parsers\Requests\Parameters\PathParameterParser::class,
+    \Laxity7\LaravelSwagger\Parsers\Requests\Parameters\QueryParameterParser::class,
     \App\Swagger\CustomBodyParameterGenerator::class,
 ],
 ```
-
-4. Save the `config/laravel-swagger.php` file and run the `php artisan laravel-swagger:generate` command.
 
 ## Example
 
@@ -102,17 +100,16 @@ Your sample controller might look like this:
 ```php
 use Laxity7\LaravelSwagger\Attributes\Request;
 
-/**
- * Return all the details of a user
- *
- * Returns the user's first name, last name and address
- * Please see the documentation [here](https://example.com/users) for more information
- *
- * @deprecated
- */
 class UserController extends Controller
 {
     /**
+    *  Return all the details of a user
+    *
+    * Returns the user's first name, last name and address
+    * Please see the documentation [here](https://example.com/users) for more information
+    *
+    * @deprecated
+    * 
     * @param int $id User ID
     */
     public function show(UserShowRequest $request, int $id)
@@ -170,7 +167,7 @@ class UserShowRequest extends FormRequest
 
 ```
 
-Running `php artisan swagger:generate -o=swagger.json` will generate the following file:
+Running `php artisan swagger:generate -o swagger.json` will generate the following file:
 ```json
 {
     "swagger": "2.0",
@@ -239,7 +236,3 @@ Running `php artisan swagger:generate -o=swagger.json` will generate the followi
     }
 }
 ```
-
-## Contributing
-
-If you wish to contribute to this project, please feel free to submit a pull request. I will review it as soon as I can.

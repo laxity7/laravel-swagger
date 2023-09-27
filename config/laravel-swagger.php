@@ -1,8 +1,10 @@
 <?php
 
-use Laxity7\LaravelSwagger\Parsers\Requests\Generators\BodyParameterGenerator;
-use Laxity7\LaravelSwagger\Parsers\Requests\Generators\PathParameterGenerator;
-use Laxity7\LaravelSwagger\Parsers\Requests\Generators\QueryParameterGenerator;
+use Laxity7\LaravelSwagger\Formatters\JsonFormatter;
+use Laxity7\LaravelSwagger\Formatters\YamlFormatter;
+use Laxity7\LaravelSwagger\Parsers\Requests\Parameters\BodyParameterParser;
+use Laxity7\LaravelSwagger\Parsers\Requests\Parameters\PathParameterParser;
+use Laxity7\LaravelSwagger\Parsers\Requests\Parameters\QueryParameterParser;
 
 return [
 
@@ -85,10 +87,14 @@ return [
     |
     | Allow overriding generator classes with a custom implementation
     */
+    'formatters' => [
+        'json' => JsonFormatter::class,
+        'yaml' => YamlFormatter::class,
+    ],
 
-    'requestsGenerators' => [
-        PathParameterGenerator::class,
-        BodyParameterGenerator::class,
-        QueryParameterGenerator::class,
+    'parameterParsers' => [
+        PathParameterParser::class,
+        BodyParameterParser::class,
+        QueryParameterParser::class,
     ],
 ];

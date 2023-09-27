@@ -1,11 +1,11 @@
 <?php
 
-namespace Laxity7\LaravelSwagger\Parsers\Requests\Generators;
+namespace Laxity7\LaravelSwagger\Parsers\Requests\Parameters;
 
 use Laxity7\LaravelSwagger\Enums\Method;
 use Laxity7\LaravelSwagger\Parsers\Route;
 
-interface ParameterGenerator
+interface ParameterParser
 {
     public function isNeedParsing(Route $route, Method $method): bool;
 
