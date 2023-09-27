@@ -40,12 +40,7 @@ final class RouteRequest
 
     public function getDescription(): string
     {
-        return $this->getClassDocBlock()?->getDescription()->render() ?? '';
-    }
-
-    public function getSummary(): string
-    {
-        return $this->getClassDocBlock()?->getSummary() ?? '';
+        return $this->getClassDocBlock()?->getSummary() ?: $this->getClassDocBlock()?->getDescription()->render() ?? '';
     }
 
     public function getFieldDescription(string $field): string

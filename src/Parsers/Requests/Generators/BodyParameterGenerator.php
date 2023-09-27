@@ -34,7 +34,6 @@ final class BodyParameterGenerator implements ParameterGenerator
         $params = [
             'in' => 'body',
             'name' => 'body',
-            'summary' => $route->request?->getSummary() ?? '',
             'description' => $route->request?->getDescription() ?? '',
             'schema' => [
                 'type' => 'object',
@@ -42,6 +41,10 @@ final class BodyParameterGenerator implements ParameterGenerator
                 'required' => $required,
             ],
         ];
+
+        if (empty($params['description'])) {
+            unset($params['description']);
+        }
 
         if (empty($required)) {
             unset($params['schema']['required']);

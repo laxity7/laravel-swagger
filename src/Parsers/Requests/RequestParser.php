@@ -12,7 +12,7 @@ final class RequestParser
     public function __construct(
         private readonly Route $route,
         private readonly Method $methodName,
-        /** @var ParameterGenerator[] */
+        /** @var list<class-string<ParameterGenerator>> */
         private readonly array $generators,
     ) {
     }
@@ -22,7 +22,7 @@ final class RequestParser
         $parameters = [];
         foreach ($this->generators as $generator) {
             if (!is_subclass_of($generator, ParameterGenerator::class)) {
-                throw new Exception(sprintf('Generator %s must implement %s', $generator::class, ParameterGenerator::class));
+                throw new Exception(sprintf('Generator %s must implement %s', $generator, ParameterGenerator::class));
             }
             /** @var ParameterGenerator $generator */
             $generator = app($generator);
