@@ -8,9 +8,9 @@ final class FormatterManager
 {
     private Formatter $formatter;
 
-    public function __construct(private array $docs)
+    public function __construct(private array $docs, string $format = 'json')
     {
-        $this->formatter = $this->getFormatter('json');
+        $this->formatter = $this->getFormatter($format);
     }
 
     public function setFormat(string $format): self

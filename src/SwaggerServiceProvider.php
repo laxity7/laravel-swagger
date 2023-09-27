@@ -4,14 +4,14 @@ namespace Laxity7\LaravelSwagger;
 
 use Illuminate\Support\ServiceProvider;
 
-class SwaggerServiceProvider extends ServiceProvider
+final class SwaggerServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -19,20 +19,16 @@ class SwaggerServiceProvider extends ServiceProvider
             ]);
         }
 
-        $source = __DIR__ . '/../config/laravel-swagger.php';
+        $source = __DIR__.'/../config/laravel-swagger.php';
 
         $this->publishes([
             $source => config_path('laravel-swagger.php'),
         ]);
 
-        $this->mergeConfigFrom(
-            $source, 'laravel-swagger'
-        );
+        $this->mergeConfigFrom($source, 'laravel-swagger');
 
-        $this->app->bind(GeneratorContract::class, function () {
-            $class = config('laravel-swagger.generatorClass');
-
-            return new $class(config('laravel-swagger'));
+        $this->app->bind(Generator::class, function () {
+            return new Generator(config('laravel-swagger'));
         });
     }
 }

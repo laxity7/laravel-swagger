@@ -83,11 +83,8 @@ return [
     | Overrides
     |--------------------------------------------------------------------------
     |
-    | Allow overriding the generator class with a custom implementation
-    |
+    | Allow overriding generator classes with a custom implementation
     */
-
-    'generatorClass' => Laxity7\LaravelSwagger\Generator::class,
 
     'requestsGenerators' => [
         PathParameterGenerator::class,

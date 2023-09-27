@@ -12,7 +12,7 @@ use Laxity7\LaravelSwagger\Parsers\Requests\RequestParser;
 use Laxity7\LaravelSwagger\Parsers\ResponseParser;
 use Laxity7\LaravelSwagger\Parsers\Route;
 
-final class Generator implements GeneratorContract
+final class Generator
 {
     public const SECURITY_DEFINITION_NAME = 'OAuth2';
     public const OAUTH_TOKEN_PATH = '/oauth/token';
@@ -40,7 +40,6 @@ final class Generator implements GeneratorContract
          *     routeFilter: string|null,
          *     parseSecurity: bool,
          *     authFlow: string,
-         *     generatorClass: string,
          *     requestsGenerators: list<class-string<ParameterGenerator>>,
          * }
          */

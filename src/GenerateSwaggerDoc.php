@@ -14,7 +14,7 @@ final class GenerateSwaggerDoc extends Command
     protected $signature = 'swagger:generate
                             {--format=json : The format of the output, current options are json and yaml}
                             {--f|filter= : Filter to a specific route prefix, such as /api or /v2/api}
-                            {--o|output= : Output file to write the contents to, defaults to stdout}';
+                            {--o|output= : Output file to write the contents to, defaults to stdout, for example: swagger.json}';
 
     /**
      * The console command description.
@@ -24,7 +24,7 @@ final class GenerateSwaggerDoc extends Command
     protected $description = 'Automatically generates a swagger documentation file for this application';
 
     public function __construct(
-        private GeneratorContract $generator
+        private Generator $generator
     ) {
         parent::__construct();
     }
@@ -36,17 +36,22 @@ final class GenerateSwaggerDoc extends Command
     {
         $filter = $this->option('filter') ?: null;
         $file = $this->option('output') ?: null;
+        $format = $this->option('format') ?: 'json';
 
         $docs = $this->generator->setRouteFilter($filter)->generate();
+        $formattedDocs = (new FormatterManager($docs, $format))->format();
 
-        $formattedDocs = (new FormatterManager($docs))
-            ->setFormat($this->option('format'))
-            ->format();
-
-        if ($file) {
-            file_put_contents($file, $formattedDocs);
-        } else {
+        if (!$file) {
             $this->line($formattedDocs);
+            return;
         }
+
+        if (!is_writable(dirname($file))) {
+            $this->error('Cannot write to file: '.$file);
+            return;
+        }
+
+        file_put_contents($file, $formattedDocs);
+        $this->line('Swagger documentation generated successfully.');
     }
 }
