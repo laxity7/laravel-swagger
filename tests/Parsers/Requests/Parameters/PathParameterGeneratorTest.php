@@ -3,7 +3,7 @@
 namespace Laxity7\LaravelSwagger\Tests\Parsers\Requests\Parameters;
 
 use Illuminate\Routing\Route as LaravelRoute;
-use Laxity7\LaravelSwagger\Parsers\Requests\Generators\PathParameterGenerator;
+use Laxity7\LaravelSwagger\Parsers\Requests\Parameters\PathParameterParser;
 use Laxity7\LaravelSwagger\Parsers\Route;
 use Laxity7\LaravelSwagger\Tests\Stubs\Enums\IntEnum;
 use Laxity7\LaravelSwagger\Tests\Stubs\Enums\NamedEnum;
@@ -134,7 +134,7 @@ final class PathParameterGeneratorTest extends TestCase
 
     private function getParameters(LaravelRoute $route): array
     {
-        return (new PathParameterGenerator())->getParameters(new Route($route));
+        return (new PathParameterParser())->getParameters(new Route($route));
     }
 
     private function getRoute(string $uri, callable|array $action = null): LaravelRoute

@@ -39,7 +39,9 @@ final class GenerateSwaggerDoc extends Command
         $format = $this->option('format') ?: 'json';
 
         $docs = $this->generator->setRouteFilter($filter)->generate();
-        $formattedDocs = (new FormatterManager($docs, $format))->format();
+
+
+        $formattedDocs = (new FormatterManager($docs, config('laravel-swagger.formatters')))->format($format);
 
         if (!$file) {
             $this->line($formattedDocs);
